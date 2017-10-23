@@ -12,7 +12,6 @@ OUTFILE2="pathwayEnrichment.tsv"
 ERRORS=""
 NBFAIL=0
 NBTEST=0
-#TESTS=('')
 TESTS=('' '-f 30' '-l c,h,p' '-l p,h,c' '-l')
 NAME_TESTS=('regular' 'filtered' 'mapping including p layer' 'with shuffled layer parameters' 'mapping on formula only')
 EXPECTED_LENGTH=(45 19 29 29 48)
@@ -82,8 +81,8 @@ run(){
 
 tests(){
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
-        if [ -z $1 ]; then echo -n ""
-        #wget "-P tmp/ https://github.com/MetExplore/container-PathwayEnrichment/blob/master/testData/mapping.tsv${i}" #TODO: create a zip with an output set to compare with expected
+        if [ -z $1 ]; then
+        wget -P tmp/ https://raw.githubusercontent.com/MetExplore/container-PathwayEnrichment/master/testData/mapping.tsv"${i}"
         else createdDummyOutput $i
         fi
         run "-i $INFILE ${TESTS[i]}"
