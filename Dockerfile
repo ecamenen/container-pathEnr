@@ -10,7 +10,7 @@ MAINTAINER PhenoMeNal-H2020 Project ( phenomenal-h2020-users@googlegroups.com )
 
 LABEL Description="Predicts pathway enrichment in human metabolic bionetwork (Recon 2v3) from a dataset of pre-selected metabolites"
 LABEL software.version="1.0.3"
-LABEL version="1.0"
+LABEL version="1.0.1"
 LABEL software="PathwayEnrichment"
 LABEL website="metexplore.toulouse.inra.fr"
 LABEL tags="Metabolomics"
