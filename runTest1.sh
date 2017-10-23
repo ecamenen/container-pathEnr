@@ -76,13 +76,13 @@ printError(){
 }
 
 run(){
-    java -jar pathwayEnrichment.jar $@ > resultRuns.log 2>&1
+    java -jar pathwayEnrichment.jar $@ >> resultRuns.log 2>&1
 }
 
 tests(){
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
         if [ -z $1 ]; then
-        wget -P tmp/ https://raw.githubusercontent.com/MetExplore/container-PathwayEnrichment/master/testData/mapping.tsv"${i}"
+        wget -q -P tmp/ https://raw.githubusercontent.com/MetExplore/container-PathwayEnrichment/master/testData/mapping.tsv"${i}"
         else createdDummyOutput $i
         fi
         run "-i $INFILE ${TESTS[i]}"
@@ -112,7 +112,7 @@ main(){
     else quickTests
     fi
     rm -r tmp/
-    printf "\n$NBTEST tests, $NBFAIL failed$ERRORS\n"
+    printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
     getElapsedTime $START_TIME
     [[ -z $ERRORS ]] || exit 1
     exit 0

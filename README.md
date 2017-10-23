@@ -1,7 +1,7 @@
 ![LOGO](Logo_Metexplore.png)
 # PathwayEnrichement
 
-Version:1.0
+Version: 1.0.1
 
 ## Short description
 Predicts pathway enrichment in human metabolic bionetwork (Recon 2v3) from a dataset of pre-selected metabolites
