@@ -12,10 +12,76 @@ true	2-Aminoadipic acid	L-2-aminoadipate(1-)	InChI=1S/C6H11NO4/c7-4(6(10)11)2-1-
 true	3-Methylcrotonylglycine	3-methylcrotonoylglycine	InChI=1S/C7H11NO3/c1-5(2)3-6(9)8-4-7(10)11/h3H,4H2,1-2H3,(H,8,9)(H,10,11)	InChI=1S/C7H11NO3/c1-5(2)3-6(9)8-4-7(10)11/h3H,4H2,1-2H3,(H,8,9)(H,10,11)
 true	4-Hydroxybenzoic acid	4-hydroxybenzoate	InChI=1S/C7H6O3/c8-6-3-1-5(2-4-6)7(9)10/h1-4,8H,(H,9,10)	InChI=1S/C7H6O3/c8-6-3-1-5(2-4-6)7(9)10/h1-4,8H,(H,9,10)/p-1
 true	5-Hydroxyindoleacetic acid	5-Hydroxyindoleacetate	InChI=1S/C10H9NO3/c12-7-1-2-9-8(4-7)6(5-11-9)3-10(13)14/h1-2,4-5,11-12H,3H2,(H,13,14)	InChI=1S/C10H9NO3/c12-7-1-2-9-8(4-7)6(5-11-9)3-10(13)14/h1-2,4-5,11-12H,3H2,(H,13,14)
+true	Aspartic acid	(alpha-D-mannosyl)6-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)6-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)3-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	glucosyl-(alpha-D-mannosyl)6-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)3-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	3,5,3,5-tetraiodothyroacetate-beta-D-glucuronoside	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	3,5-diiodothyroacetate-beta-D-glucuronoside	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	3,5,3-triiodothyroacetate-beta-D-glucuronoside	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	3,3,5-triiodothyroacetate-beta-D-glucuronoside	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	3,5,3,5-tetraiodo-L-thyronine-beta-D-glucuronoside	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)4-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)4-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
 true	Aspartic acid	N-acetyl-seryl-aspartate	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)/p-2/t2-/m0/s1
+true	Aspartic acid	(alpha-D-Mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	alpha-D-mannosyl-beta-D-mannosyl-diacylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	alpha-D-mannosyl-beta-D-mannosyl-diacylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)2-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)6-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
 true	Aspartic acid	L-aspartate(1-)	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)/p-1/t2-/m0/s1
 true	Aspartic acid	D-aspartate(1-)	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)/p-1/t2-/m1/s1
+true	Aspartic acid	(N-acetyl-D-glucosaminyl-(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyl)-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	Dolichyl phosphate D-mannose, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	Dolichyl phosphate D-mannose, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), free chain	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(N-acetyl-D-glucosaminyl-(alpha-D-mannosyl)4-beta-D-mannosyl-diacetylchitobiosyl)-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), degradation product 5	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), degradation product 4	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), degradation product 3	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), degradation product 2	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), degradation product 1	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), degradation product 6	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S) proteoglycan	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)7-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)7-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)3-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), precursor 3	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), precursor 4	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S), precursor 5	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate D (GlcNAc6S-GlcA2S) precursor 2	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	((N-acetyl-D-glucosaminyl)2-(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyl)-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)4-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	glucosyl-(alpha-D-mannosyl)7-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine, isoform B (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	alpha-D-Glucosyl-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	alpha-D-Glucosyl-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
 true	Aspartic acid	1-deoxy-1-(N6-lysino)-D-fructose	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)	InChI=1S/C4H7NO4/c5-2(4(8)9)1-3(6)7/h2H,1,5H2,(H,6,7)(H,8,9)
+true	Aspartic acid	(alpha-D-mannosyl)3-beta-D-mannosyl-diacetylchitodiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)3-beta-D-mannosyl-diacetylchitodiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	2-keto-3-deoxy-D-glycero-D-galactononic acid	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)6-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)6-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)5-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)5-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)2-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Glucosyl)2-(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)5-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-Mannosyl)5-beta-D-mannosyl-diacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	Dolichyl beta-D-glucosyl phosphate, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	Dolichyl beta-D-glucosyl phosphate, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	((N-acetyl-D-glucosaminyl)3-(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyl)-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)8-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	(alpha-D-mannosyl)5-beta-D-mannosyl-diacetylchitobiosyl-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	((N-acetyl-D-glucosaminyl)5-(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyl)-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	beta-D-Mannosyldiacetylchitobiosyldiphosphodolichol, human liver homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	beta-D-Mannosyldiacetylchitobiosyldiphosphodolichol, human uterine homolog	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	chondroitin sulfate C (GalNAc6S-GlcA) and D (GlcNAc6S-GlcA2S), precursor 1	CHEBI:22660	CHEBI:22660
+true	Aspartic acid	((N-acetyl-D-glucosaminyl)4-(alpha-D-mannosyl)2-beta-D-mannosyl-diacetylchitobiosyl)-L-asparagine (protein)	CHEBI:22660	CHEBI:22660
 true	Azelaic acid	Azelaic acid	InChI=1S/C9H16O4/c10-8(11)6-4-2-1-3-5-7-9(12)13/h1-7H2,(H,10,11)(H,12,13)	InChI=1S/C9H16O4/c10-8(11)6-4-2-1-3-5-7-9(12)13/h1-7H2,(H,10,11)(H,12,13)
 true	Citric acid	Citrate	InChI=1S/C6H8O7/c7-3(8)1-6(13,5(11)12)2-4(9)10/h13H,1-2H2,(H,7,8)(H,9,10)(H,11,12)	InChI=1S/C6H8O7/c7-3(8)1-6(13,5(11)12)2-4(9)10/h13H,1-2H2,(H,7,8)(H,9,10)(H,11,12)
 true	Citric acid	citr_L[e]	InChI=1S/C6H8O7/c7-3(8)1-6(13,5(11)12)2-4(9)10/h13H,1-2H2,(H,7,8)(H,9,10)(H,11,12)	InChI=1S/C6H8O7/c7-3(8)1-6(13,5(11)12)2-4(9)10/h13H,1-2H2,(H,7,8)(H,9,10)(H,11,12)
