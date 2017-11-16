@@ -153,6 +153,8 @@ getElapsedTime(){
 main(){
     START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
     printf "Tests in progress, could take a few minutes...\n"
+    local GIT_PATH="https://raw.githubusercontent.com/MetExplore/phnmnl-PathwayEnrichment/master"
+    wget -q -P data/ $GIT_PATH/$INFILE $GIT_PATH/data/recon2.v03_ext_noCompartment_noTransport_v2.xml
     mkdir temp
     if [ -z $1 ]; then tests
     else quickTests
