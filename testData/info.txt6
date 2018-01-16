@@ -1,2 +1,5 @@
+###Warning: There are 67 possible matches for Aspartic acid.
+###Warning: There are 2 possible matches for Citric acid.
+###Warning: Please, check the corresponding lines in the mapping output file. These duplicates will be discarded from the pathway analysis.
 14 metabolites have been mapped (on 110).
-24 pathways are concerned among the network (on 97).
+14 pathways are concerned among the network (on 97).
