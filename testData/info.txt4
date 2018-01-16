@@ -1,2 +1,24 @@
+###Warning: There are 3 possible matches for p-Hydroxymandelic acid.
+###Warning: There are 3 possible matches for p-Hydroxyphenylacetic acid.
+###Warning: There are 2 possible matches for Pyroglutamic acid.
+###Warning: There are 2 possible matches for Pyruvic acid.
+###Warning: There are 15 possible matches for Salicylic acid.
+###Warning: There are 3 possible matches for 3,4-Dihydroxybenzeneacetic acid.
+###Warning: There are 3 possible matches for 3-Hydroxyphenylacetic acid.
+###Warning: There are 2 possible matches for 3-Methyl-2-oxovaleric acid.
+###Warning: There are 15 possible matches for 4-Hydroxybenzoic acid.
+###Warning: There are 4 possible matches for Aspartic acid.
+###Warning: There are 4 possible matches for Citric acid.
+###Warning: There are 2 possible matches for Dehydroepiandrosterone sulfate.
+###Warning: There are 2 possible matches for Glyceric acid.
+###Warning: There are 2 possible matches for Hippuric acid.
+###Warning: There are 3 possible matches for Hydroxyphenyllactic acid.
+###Warning: There are 2 possible matches for Ketoleucine.
+###Warning: There are 2 possible matches for N-Acetyl-aspartic acid.
+###Warning: There are 2 possible matches for Tetrahydrohippuric acid.
+###Warning: There are 3 possible matches for o-Hydroxyphenylacetic acid.
+###Warning: There are 3 possible matches for p-Anisic acid.
+###Warning: There are 3 possible matches for p-Hydroxyhippuric acid.
+###Warning: Please, check the corresponding lines in the mapping output file. These duplicates will be discarded from the pathway analysis.
 43 metabolites have been mapped (on 110).
-43 pathways are concerned among the network (on 97).
+30 pathways are concerned among the network (on 97).

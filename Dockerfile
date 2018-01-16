@@ -8,14 +8,14 @@ FROM java:8
 
 MAINTAINER PhenoMeNal-H2020 Project ( phenomenal-h2020-users@googlegroups.com )
 
-LABEL Description="Predicts pathway enrichment in human metabolic bionetwork (Recon 2v3) from a dataset of pre-selected metabolites"
-LABEL software.version="1.0.5"
-LABEL version="1.0.3"
+LABEL Description="Predicts enrichment among a (human) metabolic network (Recon 2v02 flat) from a fingerprint"
+LABEL software.version="1.0.6"
+LABEL version="1.0.4"
 LABEL software="PathwayEnrichment"
 LABEL website="metexplore.toulouse.inra.fr"
 LABEL tags="Metabolomics"
 
-ENV TAG_NUMBER 1.0.5
+ENV TAG_NUMBER 1.0.6
 
 RUN apt-get update && apt-get install -y --no-install-recommends maven && \
 	git clone --depth 1 --single-branch --branch $TAG_NUMBER https://github.com/MetExplore/phnmnl-PathwayEnrichment.git Javafiles && \
@@ -30,6 +30,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends maven && \
 
 
 ADD runTest1.sh /usr/local/bin/runTest1.sh
-RUN chmod +x /usr/local/bin/runTest1.sh
+#RUN chmod +x /usr/local/bin/runTest1.sh
 
 ENTRYPOINT ["java", "-jar", "pathwayEnrichment.jar"]
