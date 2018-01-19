@@ -1,7 +1,7 @@
 ![LOGO](Logo_Metexplore.png)
 # PathwayEnrichement
 
-Version: 1.0.4
+Version: 1.0.5
 
 ## Short description
 Predicts enrichment among a (human) metabolic network (Recon 2v02 flat) from a fingerprint
@@ -10,14 +10,13 @@ Predicts enrichment among a (human) metabolic network (Recon 2v02 flat) from a f
 Metabolites belonging to the fingerprint (input file) are mapped on Recon2 network (Thiele et al., 2013) using either INCHI, CHEBI or metabolite ID in SBML (or all) information. Pathway enrichment is calculated with an exact Fisher one-tailed test corrected by Bonferroni and Benjamini Hochberg methods. This tool is part of the MetExplore's project consisting in a web server dedicated to the analysis of omics data in the context of genome scale metabolic networks (Cottret et al., 2010).
 
 ### Input files
-- a fingerprint (tsv or tabular format): a list of identified metabolites containing at least their names (first column), their InChI or their CHEBI, and optionnaly a information indicating if metabolites are significant or not.
-- a metabolic network (bionetwork) : optional, by default recon2 sbml file is used (Thiele et al., 2013).
+- a fingerprint (tsv or tabular format): composed by at least a column with InChI, CHEBI or metabolites' ID values to perform mapping. Multi-mapping (i.e., mapping on different information) could be performed if these three kind of values are included each in a separate column. Optionaly, this program could use the names of the metabolites and empty values to filter non-significant metabolites.
+- a metabolic network (bionetwork) : optional, by default Recon2 SBML file is used (Thiele et al., 2013).
 
 ### Output files
 - "mapping.tsv": each line corresponds to metabolites from the dataset file: the success or the failure of the mapping, their names in the dataset, those of one or several elements of the network in case of matching.
 - "pathwayEnrichment.tsv" contains for each pathway associated with the mapped metabolites: their names, the Fisher's p value of enrichment, the Bonferroni (or other test correction) q-value, the list of mapped metabolites, the number of mapped metabolites and the coverage of mapped metabolites on the total of metabolites contained in the studied pathway.
-- "info.txt" contains general information about mapping and pathway enrichment results. This file contains the total number of mapped metabolites, the total number of metabolites from the dataset, the total number of pathways after mapping and the total number of pathways in the original SBML files. Eventually, warnings show doublets in mapping wich are discarded from the pathway analysis. In this case, the user must select the corresponded metabolite ID in the network and relaunch the analysis.
-
+- "info.txt" contains general information about mapping and pathway enrichment results. This file contains the total number of mapped metabolites, the total number of metabolites from the dataset, the total number of pathways after mapping and the total number of pathways in the original SBML files. Eventually, warnings alert about doublets in mapping wich are discarded from the pathway analysis. In this case, the user must choose the corresponded metabolite's ID in the network in order to add them to their fingerprint dataset and relaunch the analysis by using the ID mapping only.
 ## Key features
 - Metabolic network
 - Modeling

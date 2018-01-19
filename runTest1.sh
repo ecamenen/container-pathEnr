@@ -15,15 +15,15 @@ NBFAIL=0
 NBTEST=0
 TESTS=('' '-f 30' '-l c,h,p' '-l p,h,c' '-l' '-chebi 2' '-chebi 2 -inchi -1')
 NAME_TESTS=('by default' 'filtered column' 'including p layer in mapping' 'with shuffled layer parameters' 'mapping on formula only' 'CHEBI column activated' 'INCHI column disabled and CHEBI column activated')
-'' > resultRuns.log
+echo '' > resultRuns.log
 
 testError(){
     local BOOLEAN_ERR="false"
-    local MSG="$ERRORS\nTest \"${NAME_TESTS[$2]}\": "
+    local MSG=""
     local OUTFILES=($OUTFILE1 $OUTFILE2 $OUTFILE3)
 
     [ $1 -ne 0 ] && {
-        MSG=$MSG"Program exited with error. "
+        MSG=$MSG"Program exited with error.\n"
         BOOLEAN_ERR="true"
     }
 
@@ -31,7 +31,7 @@ testError(){
         for i in ${OUTFILES[@]}; do
 		testFileExist $i
 	done
-        MSG=$MSG"not created. "
+        MSG=$MSG"not created. \n"
         BOOLEAN_ERR="true"
     }
 
@@ -44,19 +44,20 @@ testError(){
 
     rm $OUTFILE1 $OUTFILE2 $OUTFILE3
     [ $BOOLEAN_ERR == "true" ] && {
-	    ERRORS=$ERRORS"$MSG"
+	    ERRORS=$ERRORS"\n***************\n##Test \"${NAME_TESTS[$2]}\": \n$MSG"
 	    return 1
     }
     return 0
 }
 
 compareFile(){
-    [[ -n $(cmp temp/$1"$2" $1) ]] && MSG=$MSG"Expected and actual $1 files are not identicals. "
+    [[ -n $(cmp temp/$1"$2" $1) ]] && MSG=$MSG"Expected and actual $1 files are not identicals. \n"
 }
 
 testFileExist(){
     [ ! -f $1 ] && MSG=$MSG"$1 "
 }
+
 printError(){
     let NBTEST+=1
     testError $1 $2
@@ -68,7 +69,7 @@ printError(){
 }
 
 run(){
-    java -jar pathwayEnrichment.jar -o3 info.txt $@
+    java -jar pathwayEnrichment.jar -o3 info.txt $@ >> resultRuns.log 2>&1
 }
 
 tests(){
