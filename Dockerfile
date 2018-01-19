@@ -10,7 +10,7 @@ MAINTAINER PhenoMeNal-H2020 Project ( phenomenal-h2020-users@googlegroups.com )
 
 LABEL Description="Predicts enrichment among a (human) metabolic network (Recon 2v02 flat) from a fingerprint"
 LABEL software.version="1.0.6"
-LABEL version="1.0.4"
+LABEL version="1.0.5"
 LABEL software="PathwayEnrichment"
 LABEL website="metexplore.toulouse.inra.fr"
 LABEL tags="Metabolomics"
