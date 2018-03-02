@@ -6,15 +6,15 @@
 #
 #Copyright: PhenoMeNal/INRA Toulouse 2017
 
-INFILE="data/Galaxy15-[Biosigner_Multivariate_Univariate_Multivariate_variableMetadata.tsv].tabular"
+INFILE="data/sacurine_workflow_output.tsv"
 OUTFILE1="mapping.tsv"
 OUTFILE2="pathwayEnrichment.tsv"
-OUTFILE3="info.txt"
+OUTFILE3="information.txt"
 ERRORS=""
 NBFAIL=0
 NBTEST=0
-TESTS=('' '-f 30' '-l c,h,p' '-l p,h,c' '-l' '-chebi 2' '-chebi 2 -inchi -1')
-NAME_TESTS=('by default' 'filtered column' 'including p layer in mapping' 'with shuffled layer parameters' 'mapping on formula only' 'CHEBI column activated' 'INCHI column disabled and CHEBI column activated')
+TESTS=('' '-t 1' '-f 13' '-inchi 4' '-inchi 4 -l c,h,p' '-inchi 4 -l p,h,c' '-l c,h,p' '-inchi 4 -l' '-l' '-chebi 3' '-inchikey 5' '-kegg 6' '-hmdb 8' '-csid 9' '-name -1' '-name -1 -inchi 4' '-s data/recon2.02.xml' '--header' '-sep \t')
+NAME_TESTS=('by default' 'with reactions' 'filtered column' 'inchi mapping' 'including p layer in mapping' 'with shuffled layer parameters' 'including p layer in mapping without inchi column' 'mapping on formula only' 'mapping on formula only without inchi column' 'ChEBI' 'InChIKey' 'KEGG' 'HMDB' 'CSID' 'without name mapping' 'without name mapping but with another mapping' 'with another SBML' 'without header' 'with separator argument')
 echo '' > resultRuns.log
 
 testError(){
@@ -42,8 +42,9 @@ testError(){
         BOOLEAN_ERR="true"
     }
 
-    rm $OUTFILE1 $OUTFILE2 $OUTFILE3
+    #rm $OUTFILE1 $OUTFILE2 $OUTFILE3
     [ $BOOLEAN_ERR == "true" ] && {
+	echo $MSG
 	    ERRORS=$ERRORS"\n***************\n##Test \"${NAME_TESTS[$2]}\": \n$MSG"
 	    return 1
     }
@@ -69,19 +70,33 @@ printError(){
 }
 
 run(){
-    java -jar pathwayEnrichment.jar -o3 info.txt $@ >> resultRuns.log 2>&1
+    #java -jar pathwayEnrichment.jar -gal $@
+    java -jar pathwayEnrichment.jar -gal $@ >> resultRuns.log 2>&1
 }
 
 tests(){
-    local GIT_PATH="https://raw.githubusercontent.com/phnmnl/container-pathwayEnrichment/master/testData"
+    #local GIT_PATH="https://raw.githubusercontent.com/phnmnl/container-pathwayEnrichment/master/testData"
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
-        if [ -z $1 ]; then
-            wget -q -P temp/ $GIT_PATH/mapping.tsv"${i}" $GIT_PATH/pathwayEnrichment.tsv"${i}" $GIT_PATH/info.txt"${i}"
-        else createdDummyOutput $i
-        fi
+        #wget -q -P temp/ $GIT_PATH/mapping.tsv"${i}" $GIT_PATH/pathwayEnrichment.tsv"${i}" $GIT_PATH/info.txt"${i}"
         run "-i $INFILE ${TESTS[i]}"
         EXIT=$?
         printError $EXIT $i
+    done
+}
+
+testsFail(){
+    TESTS=('-t 0' '-t 10' 'l xmlkfmrvgj' '-inchi 5' '-pubchem 7 -name -1' '-smiles 11 -name -1')
+    NAME_TESTS=('Wrong BioType' 'Wrong BioType bis' 'Wrong layers' 'Wrong column number: 0 mapping' 'PubChem' 'SMILES')
+    for i in `seq 0 $((${#TESTS[@]} -1))`; do
+        run "-i $INFILE ${TESTS[i]}"
+        EXIT=$?
+        let NBTEST+=1
+        if [ $EXIT -ne 1 ]; then
+            echo -n "E"
+            let NBFAIL+=1
+            ERRORS=$ERRORS"\n***************\n##Test \"${NAME_TESTS[$i]}\": \nError not caught!\n"
+        else echo -n "."
+        fi
     done
 }
 
@@ -94,9 +109,10 @@ getElapsedTime(){
 
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take a few minutes...\n"
-mkdir temp
+#mkdir temp
 tests
-rm -r temp/
+testsFail
+#rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
 getElapsedTime $START_TIME
 [[ -z $ERRORS ]] || exit 1
