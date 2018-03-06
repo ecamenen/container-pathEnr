@@ -13,8 +13,8 @@ OUTFILE3="information.txt"
 ERRORS=""
 NBFAIL=0
 NBTEST=0
-TESTS=('' '-t 1' '-f 13' '-inchi 4' '-inchi 4 -l c,h,p' '-inchi 4 -l p,h,c' '-l c,h,p' '-inchi 4 -l' '-l' '-chebi 3' '-inchikey 5' '-kegg 6' '-hmdb 8' '-csid 9' '-name -1' '-name -1 -inchi 4' '-s data/recon2.02.xml' '--header' '-sep \t')
-NAME_TESTS=('by default' 'with reactions' 'filtered column' 'inchi mapping' 'including p layer in mapping' 'with shuffled layer parameters' 'including p layer in mapping without inchi column' 'mapping on formula only' 'mapping on formula only without inchi column' 'ChEBI' 'InChIKey' 'KEGG' 'HMDB' 'CSID' 'without name mapping' 'without name mapping but with another mapping' 'with another SBML' 'without header' 'with separator argument')
+TESTS=('' '-t 1' '-f 13' 'idSBML 2' '-inchi 4' '-inchi 4 -l c,h,p' '-inchi 4 -l p,h,c' '-l c,h,p' '-inchi 4 -l' '-l' '-chebi 3' '-inchikey 5' '-kegg 6' '-hmdb 8' '-csid 9' '-name -1' '-name -1 -inchi 4' '-s data/recon2.02.xml' '--header' '-sep \t')
+NAME_TESTS=('by default' 'with reactions' 'filtered column' 'id SBML mapping' 'inchi mapping' 'including p layer in mapping' 'with shuffled layer parameters' 'including p layer in mapping without inchi column' 'mapping on formula only' 'mapping on formula only without inchi column' 'ChEBI' 'InChIKey' 'KEGG' 'HMDB' 'CSID' 'without name mapping' 'without name mapping but with another mapping' 'with another SBML' 'without header' 'with separator argument')
 echo '' > resultRuns.log
 
 testError(){
@@ -71,7 +71,7 @@ printError(){
 
 run(){
     #java -jar pathwayEnrichment.jar -gal $@
-    java -jar pathwayEnrichment.jar -gal $@ >> resultRuns.log 2>&1
+    java -jar pathwayEnrichment.jar -gal $OUTFILE3 $@ >> resultRuns.log 2>&1
 }
 
 tests(){
