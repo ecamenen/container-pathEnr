@@ -4,3 +4,13 @@
 temp/
 
 data/
+
+information\.txt
+
+mapping\.tsv
+
+pathwayEnrichment\.jar
+
+pathwayEnrichment\.tsv
+
+resultRuns\.log
