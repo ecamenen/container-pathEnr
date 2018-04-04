@@ -46,7 +46,7 @@ testError(){
         BOOLEAN_ERR="true"
     }
 
-    [[ ( ! -f $OUTFILE1 ) ||  ( ! -f $OUTFILE2) ||  ( ! -f $OUTFILE3) ]] && {
+    [ $3 -eq 0 ] && [[ ( ! -f $OUTFILE1 ) ||  ( ! -f $OUTFILE2) ||  ( ! -f $OUTFILE3) ]] && {
         for i in ${OUTFILES[@]}; do
 		testFileExist $i
 	done
@@ -69,13 +69,8 @@ testError(){
         BOOLEAN_ERR="true"
     fi
 
-    testNbLine $1 $OUTFILE1
-    testNbLine $2 $OUTFILE2
-
-    [ $ACTUAL_NB_LINE_ENR -ne $2 ] && {
-        MSG=$MSG"Expected $2 lines in $OUTFILE2. Actual have $ACTUAL_NB_LINE_ENR lines.\n"
-        BOOLEAN_ERR="true"
-    }
+    testNbLine $1 $OUTFILE1 $ACTUAL_NB_LINE_MAP
+    testNbLine $2 $OUTFILE2 $ACTUAL_NB_LINE_ENR
 
     #rm $OUTFILE1 $OUTFILE2 $OUTFILE3
     [ $BOOLEAN_ERR == "true" ] && {
@@ -91,8 +86,8 @@ testFileExist(){
 }
 
 testNbLine(){
-    [ $ACTUAL_NB_LINE_MAP -ne $1 ] && {
-        MSG=$MSG"Expected $1 lines in $2. Actual have $ACTUAL_NB_LINE_MAP lines.\n"
+    [ -f $2 ] && [ $3 -ne $1 ] && {
+        MSG=$MSG"Expected $1 lines in $2. Actual have $3 lines.\n"
         BOOLEAN_ERR="true"
     }
 }
@@ -190,8 +185,8 @@ testsDefault(){
 testsMappingDB(){
     PARAMETER=0
 
-    #TESTS=('-chebi 3' '-inchi 4')
-    TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
+    TESTS=('-chebi 3')
+    #TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
     NB_LINE_MAP=('178' '116' '111' '111' '170' '112' '112' '178' '112' '178')
     NB_LINE_ENR=('15' '39' '4' '4' '31' '16' '14' '15' '15' '11')
     OUTPUTS=()
@@ -203,6 +198,23 @@ testsMappingDB(){
 
     test "multiple"
 }
+
+testsMass(){
+#isotopic mass
+    TESTS=('-mass 12 -prec 2')
+    NB_LINE_MAP=''
+    NB_LINE_ENR=''
+    MSG=$MSG_NAME
+
+    TESTS=('-prec 2')
+    MSG="[WARNING] Precision has been set without specify isotopic mass column in the fingerprint.\n[WARNING] By default, it has been set to the 2nd column."
+    EXIT='1'
+
+    TESTS=('-prec 101' 'prec 0' 'prec -1')
+    MSG="Weight precision must be comprise between 1 and 100."
+    EXIT='1'
+}
+
 
 testsFail(){
     TESTS=('-t 0' '-t 10' 'l xmlkfmrvgj' '-inchi 5' '-smiles 11 -name -1')
