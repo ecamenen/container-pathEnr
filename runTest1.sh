@@ -69,10 +69,8 @@ testError(){
         BOOLEAN_ERR="true"
     fi
 
-    [ $ACTUAL_NB_LINE_MAP -ne $1 ] && {
-        MSG=$MSG"Expected $1 lines in $OUTFILE1. Actual have $ACTUAL_NB_LINE_MAP lines.\n"
-        BOOLEAN_ERR="true"
-    }
+    testNbLine $1 $OUTFILE1
+    testNbLine $2 $OUTFILE2
 
     [ $ACTUAL_NB_LINE_ENR -ne $2 ] && {
         MSG=$MSG"Expected $2 lines in $OUTFILE2. Actual have $ACTUAL_NB_LINE_ENR lines.\n"
@@ -90,6 +88,13 @@ testError(){
 
 testFileExist(){
     [ ! -f $1 ] && MSG=$MSG"$1 "
+}
+
+testNbLine(){
+    [ $ACTUAL_NB_LINE_MAP -ne $1 ] && {
+        MSG=$MSG"Expected $1 lines in $2. Actual have $ACTUAL_NB_LINE_MAP lines.\n"
+        BOOLEAN_ERR="true"
+    }
 }
 
 printError(){
@@ -123,6 +128,15 @@ setDoubletsLog(){
     OUTPUT+=" [WARNING] There are $1 possible matches for $2."
 }
 
+setMultipleOutput(){
+    for i in `seq 0 $((${#TESTS[@]} -1))`; do
+        OUTPUT=""
+        setMapLogDefault ${MAP_PAR[i]}
+        #echo "$OUTPUT"
+        setEnrLogDefault ${ENR_PAR[i]}
+        OUTPUTS[i]="$OUTPUT"
+    done
+}
 
 ########### RUN PROCESS ###########
 run(){
@@ -158,8 +172,8 @@ testsDefault(){
     PARAMETER=0
     NAME='TEST_DEFAULT'
 
-    TESTS=('-t 1')
-    #TESTS=('' '-t 1' '-tEnr 3' '-s data/recon2.02_without_compartment.xml' '-sep \t' '-sepID ;')
+    #TESTS=('-t 1')
+    TESTS=('' '-t 1' '-tEnr 3' '-s data/recon2.02_without_compartment.xml' '-sep \t' '-sepID ;')
     NB_LINE_MAP='111'
     NB_LINE_ENR='40'
 
@@ -176,27 +190,19 @@ testsDefault(){
 testsMappingDB(){
     PARAMETER=0
 
-    TESTS=('-chebi 3' '-inchi 4')
-    #TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
-    NB_LINE_MAP=('178' '116' '1' '1' '1' '1' '1' '1' '1' '1')
-    NB_LINE_ENR=('15' '39' '1' '1' '1' '1' '1' '1' '1' '1')
+    #TESTS=('-chebi 3' '-inchi 4')
+    TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
+    NB_LINE_MAP=('178' '116' '111' '111' '170' '112' '112' '178' '112' '178')
+    NB_LINE_ENR=('15' '39' '4' '4' '31' '16' '14' '15' '15' '11')
     OUTPUTS=()
     MAP_PAR=('14 12.73 0.54' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
     ENR_PAR=('14 14.43' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
 
     WARN=$MSG_NAME
-
-    for i in `seq 0 $((${#TESTS[@]} -1))`; do
-        OUTPUT=""
-        setMapLogDefault ${MAP_PAR[i]}
-        #echo "$OUTPUT"
-        setEnrLogDefault ${ENR_PAR[i]}
-        OUTPUTS[i]="$OUTPUT"
-    done
+    setMultipleOutput
 
     test "multiple"
 }
-
 
 testsFail(){
     TESTS=('-t 0' '-t 10' 'l xmlkfmrvgj' '-inchi 5' '-smiles 11 -name -1')
