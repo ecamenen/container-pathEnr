@@ -131,6 +131,7 @@ setDoubletsLog(){
 }
 
 setMultipleOutput(){
+    OUTPUTS=()
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
         OUTPUT=""
         setMapLogDefault ${MAP_PARS[i]}
@@ -178,6 +179,7 @@ test(){
             WARN=${WARNS[i]}
         elif [ $1 == "warn" ]; then
             WARN=${WARNS[i]}
+            OUTPUT=${OUTPUTS[i]}
         fi
     fi
 
@@ -205,14 +207,13 @@ testsMappingDB(){
     setUp
 
     TESTS=('-chebi 3' '-inchi 4')
-    #TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
-    NB_LINE_MAPS=('178' '116' '111' '111' '170' '112' '112' '178' '112' '178')
-    NB_LINE_ENRS=('15' '39' '4' '4' '31' '16' '14' '15' '15' '11')
-    MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
-    ENR_PARS=('14 14.43' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
+    #TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
+    NB_LINE_MAPS=('178' '116' '116' '111' '111' '170' '112' '112' '178' '112' '178')
+    NB_LINE_ENRS=('15' '39' '39' '4' '4' '31' '16' '14' '15' '15' '11')
+    MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
+    ENR_PARS=('14 14.43' '38 39.18' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
 
     WARN=${MSG_NAME}
-    OUTPUTS=()
     setMultipleOutput
 
     test "parameters"
@@ -221,18 +222,23 @@ testsMappingDB(){
 testsMass(){
     setUp
 
-    TESTS=('-mass 12 -prec 2')
+    TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101')
     #TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101' 'prec 0' 'prec -1')
     NB_LINE_MAP='147'
     NB_LINE_ENR='15'
-    EXITS=('0' '0' '1' '1' '1' '1')
+    EXITS=('0' '0' '11' '1' '1' '1')
 
-    local WARN1="[WARNING] Precision has been set without specify isotopic mass column in the fingerprint.\n[WARNING] By default, it has been set to the 2nd column."
-    local WARN2="Weight precision must be comprise between 1 and 100."
-    WARNS=(${MSG_NAME} ${WARN1} ${WARN2} ${WARN2} ${WARN2})
-    OUTPUT="$MSG_NAME "${MSG_CHECK}
+    local WARN1="[WARNING] Precision has been set without specify isotopic mass column in the fingerprint. [WARNING] By default, it has been set to the 2nd column."${MSG_NAME}
+    local WARN2="Weight precision must be comprise between 1 and 100."${MSG_NAME}
+    WARNS=(${MSG_NAME} ${MSG_NAME} ${WARN1} ${WARN2} ${WARN2} ${WARN2})
+
+    OUTPUTS=()
+    OUTPUT=""
     setMapLogDefault "50" "45.45" "1.93"
     setEnrLogDefault "14" "14.43"
+    OUTPUTS[0]="$OUTPUT"
+    OUTPUTS[1]="$OUTPUT"
+    OUTPUTS[2]="[FATAL] All the values of the selected database(s) are badly formatted. Please check the column number set for these databases. -noCheck to ignore the bad format exit and run the analysis anyway."
 
     test "errors"
 }
@@ -252,8 +258,9 @@ testsID_SBML(){
 testsInChILayers(){
     setUp
 
-    TESTS=('-l chp' '-l c,hp' '-l c,')
+    TESTS=('-l chp' '-l c,hp' '-l c,' '-l xertg')
     WARN="-l parameter badly formatted: it must be a list containing the number - separated by comma without blank spaces - of the InChi's layer concerned by the mapping (by default: c,h; for a mapping including all the layers, enter c,h,q,p,b,t,i,f,r; for a mapping on formula layer only, enter the -l option with no parameter)"
+    OUTPUT=""
     EXIT='1'
 
     test
@@ -265,11 +272,11 @@ START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take a few minutes...\n"
 #mkdir temp
 
-testsDefault
-testsMappingDB
+#testsDefault
+#testsMappingDB
 testsMass
-testsID_SBML
-testsInChILayers
+#testsID_SBML
+#testsInChILayers
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
