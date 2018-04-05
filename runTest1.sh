@@ -20,6 +20,7 @@ MSG_NAME='[WARNING] No column number has been chosen for the name of the chemica
 MSG_DEF="$MSG_MAP $MSG_NAME"
 MSG_DOUBL=" [WARNING] Please, check the corresponding lines in the mapping output file.\n[WARNING] These duplicates will be discarded from the pathway analysis."
 MSG_CHECK="All your databases identifiers seem valid."
+WARN_TYPE=('[FATAL] Type of ' ' entity must be comprise between 1 and 6.')
 
 #Initialization
 declare -x INFILE SBML FUNC ERRORS=""
@@ -252,7 +253,7 @@ testsID_SBML(){
     setUp
 
     TESTS=('' '-idSBML 2' '-idSBML -2')
-    WARNS=("${MSG_DEF}" "${MSG_NAME}" "[WARNING] -idSBML column parameter must be positive. ${MSG_NEG_MAP}${MSG_NAME}")
+    WARNS=("${MSG_DEF}" "${MSG_NAME}" "[WARNING] -idSBML column parameter must be positive. ${MSG_NEG_MAP} ${MSG_NAME}")
 
     #fullOutput
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
@@ -264,7 +265,7 @@ testsID_SBML(){
     test "warn"
 }
 
-testsInChILayers(){
+testsBadInChILayers(){
     setUp
 
     TESTS=('-l chp' '-l c,hp' '-l c,' '-l xertg')
@@ -275,27 +276,31 @@ testsInChILayers(){
     test
 }
 
+#Name
+
 testsName(){
     setUp
 
     TESTS=('-nameCol 1' '-nameCol 1 -name 0')
-    WARN="$MSG_MAP"
-    OUTPUT="${WARN} ${MSG_CHECK}"
+    WARNS=("$MSG_MAP" "$MSG_NEG_MAP")
+    #TODO:full
+    OUTPUT="${MSG_CHECK}"
     setMappingDefaultParameters
 
-    test
+    test "warn2"
 }
 
 testsNameMap(){
     setUp
 
-    TESTS=('-nameCol -2 -name 1' 'name 1' '-name 1 -nameCol 2')
-    NB_LINE_MAP=11
+    #TESTS=('-nameCol -2 -name 1')
+    TESTS=('-nameCol -2 -name 1' '-name 1' '-name 1 -nameCol 2')
+    NB_LINE_MAP=111
     NB_LINE_ENR=6
-    WARNS=('' '' "[WARNING] You have set both name column and name mapping parameters and with different parameters.\n[WARNING] By default, the name mapping is activated with the column number of this parameter.\n")
+    WARNS=('' '' "[WARNING] You have set both name column and name mapping parameters and with different parameters. [WARNING] By default, the name mapping is activated with the column number of this parameter.")
     OUTPUT=""
-    #setMapLogDefault "50" "45.45" "1.93"
-    #setEnrLogDefault "14" "14.43"
+    setMapLogDefault "3" "2.73" "0.12"
+    setEnrLogDefault "5" "5.15"
 
     test "warn2"
 }
@@ -303,12 +308,46 @@ testsNameMap(){
 testsNameNegative(){
     setUp
 
+    #TESTS=('-name -1')
     TESTS=('-name -1' '-nameCol -1 -name -1' '-nameCol -1' '-name -1' '-nameCol -1')
-    MSG2=($MSG_NEG_MAP $MSG_NEG_MAP $MSG_MAP $MSG_MAP)
-    MSG=MSG2'[WARNING] Your column number for the name of the chemicals is negative'$WARN_NAME
-    NB_LINE_MAP=''
-    NB_LINE_ENR=''
+
+    WARNS2=("$MSG_NEG_MAP" "$MSG_NEG_MAP" "$MSG_MAP" "$MSG_MAP")
+    for i in `seq 0 $((${#TESTS[@]} -1))`; do
+        WARNS[i]="${WARNS2[i]} [WARNING] Your column number for the name of the chemicals is negative$WARN_NAME"
+    done
+
+    #TODO: full
+    OUTPUT="${MSG_CHECK}"
+    setMappingDefaultParameters
+
+    test "warn2"
 }
+
+
+#Entity type
+
+testBadMappedType(){
+    setUp
+
+    TESTS=('-t 0' '-t -1' '-t 7')
+    WARN=${WARN_TYPE[0]}'mapped'${WARN_TYPE[1]}
+    EXIT=1
+
+    test
+}
+
+testBadEnrichedType(){
+    setUp
+
+    TESTS=('-tEnr 0' '-tEnr -1' '-tEnr 7')
+    WARN=${WARN_TYPE[0]}'enriched'${WARN_TYPE[1]}
+    EXIT=1
+
+    test
+}
+
+
+
 
 ########### MAIN ###########
 
@@ -319,8 +358,13 @@ printf "Tests in progress, could take a few minutes...\n"
 #testsDefault
 #testsMappingDB
 #testsMass
-testsID_SBML
-#testsInChILayers
+#testsID_SBML
+#testsBadInChILayers
+testsName
+#testsNameMap
+#testsNameNegative
+#testBadMappedType
+#testBadEnrichedType
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
