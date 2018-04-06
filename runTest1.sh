@@ -472,13 +472,14 @@ testsGPR(){
 
     INFILE="gpr_recon2.02.tsv"
     SBML="recon2.02.xml"
+    #TESTS=('-t 5')
     TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3' '-t 5 -tEnr 6' '-t 4 -tEnr 6' '-t 6 -idSBML 3 -tEnr 5')
 
     #TODO:
-    NB_LINE_MAPS=('' )
-    NB_LINE_ENRS=('' )
-    MAP_PARS=('' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '' '72 genes 72 100.0 1842 3.91')
-    ENR_PARS=('' '40 pathways 100 40.0' '40 pathways 100 40.0' '69 genes 1842 3.75' '' '69 proteins 1842 3.75')
+    NB_LINE_MAPS=(73 73 73 73 73 73)
+    NB_LINE_ENRS=(41 41 41 69 65 69)
+    MAP_PARS=('72 enzymes 72 100.0 2682 2.68' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '72 enzymes 72 100.0 2682 2.68' '72 genes 72 100.0 1842 3.91')
+    ENR_PARS=('40 pathways 100 40.0' '40 pathways 100 40.0' '40 pathways 100 40.0' '69 genes 1842 3.75' '65 genes 1842 3.53' '69 proteins 1842 3.75')
 
     #WARN="${MSG_DEF}"
     setMultipleOutput "full"
@@ -509,8 +510,9 @@ printf "Tests in progress, could take a few minutes...\n"
 #testsDefaultInChILayers
 #testsFileFiltering
 #testMapReaction
-testEnrReaction
+#testEnrReaction
 #testsCheckingFormat
+testsGPR
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
