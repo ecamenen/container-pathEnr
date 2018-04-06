@@ -311,7 +311,7 @@ testsNameNegative(){
     #TESTS=('-name -1')
     TESTS=('-name -1' '-nameCol -1 -name -1' '-nameCol -1' '-name -1' '-nameCol -1')
 
-    WARNS2=("$MSG_NEG_MAP" "$MSG_NEG_MAP" "$MSG_MAP" "$MSG_MAP")
+    WARNS2=("$MSG_NEG_MAP" "$MSG_NEG_MAP" "$MSG_NEG_MAP" "$MSG_MAP")
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
         WARNS[i]="${WARNS2[i]} [WARNING] Your column number for the name of the chemicals is negative$WARN_NAME"
     done
@@ -346,8 +346,31 @@ testBadEnrichedType(){
     test
 }
 
+testSep(){
+    setUp
 
+    TESTS=('-sep ;')
+    WARN="$MSG_DEF $MSG_CHECK [FATAL] There is no match for this network ! Common mistakes: wrong type of mapping (by default on the SBML ID and the name of the metabolites), wrong number of column from the dataset or wrong type of bioEntity (or bad SBML). Please check your settings and rerun the analysis."
+    EXIT='20'
 
+    test
+}
+
+testSepID(){
+    setUp
+
+    TESTS=('-sepID , -chebi 3')
+    NB_LINE_MAP=178
+    NB_LINE_ENR=15
+
+    WARN="$MSG_NAME [WARNING] Some database identifiers are badly formatted, please take a look to \"checking_format.tsv\""
+    OUTPUT=""
+    setMapLogDefault 14 12.73 0.54
+    setEnrLogDefault 14 14.43
+
+    test
+    #TODO: debug differences between database in SBML and compare with sepID ; -chebi 3
+}
 
 ########### MAIN ###########
 
@@ -360,11 +383,13 @@ printf "Tests in progress, could take a few minutes...\n"
 #testsMass
 #testsID_SBML
 #testsBadInChILayers
-testsName
+#testsName
 #testsNameMap
 #testsNameNegative
 #testBadMappedType
 #testBadEnrichedType
+testSep
+#testSepID
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
