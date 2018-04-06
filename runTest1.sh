@@ -181,7 +181,7 @@ run(){
 getElapsedTime(){
     local END_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
     local ELAPSED_TIME=$(date -u -d "0 $END_TIME sec - $1 sec" +"%H:%M:%S")
-    echo "Time to run the process ${ELAPSED_TIME:3:2}min ${ELAPSED_TIME:6:2}s"
+    echo "Time to run the process ${ELAPSED_TIME:0:2}h ${ELAPSED_TIME:3:2}min ${ELAPSED_TIME:6:2}s"
 }
 
 test(){
@@ -235,8 +235,8 @@ testsFileFiltering(){
 
     #TESTS=('-f 13')
     TESTS=('-f 13' '-header')
-    NB_LINE_MAPS=('5' '112')
-    NB_LINE_ENRS=('19' '40')
+    NB_LINE_MAPS=(5 112)
+    NB_LINE_ENRS=(19 40)
     MAP_PARS=('3 4 75.0 0.12' '33 111 29.73 1.27')
     ENR_PARS=('18 18.56' '39 40.21')
     #TODO: check -header nb map lines with default
@@ -274,8 +274,8 @@ testsMappingDB(){
     setUp
 
     TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
-    NB_LINE_MAPS=('178' '116' '116' '111' '111' '170' '112' '112' '178' '112' '178')
-    NB_LINE_ENRS=('15' '39' '39' '4' '4' '31' '16' '14' '15' '15' '11')
+    NB_LINE_MAPS=(178 116 116 111 111 170 112 112 178 112 178)
+    NB_LINE_ENRS=(15 39 39 4 4 31 16 14 15 15 11)
     MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
     ENR_PARS=('14 14.43' '38 39.18' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
 
@@ -290,9 +290,9 @@ testsMass(){
 
     #TESTS=('-mass 12 -prec 2' '-mass 12')
     TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101' '-prec 0' '-prec -1')
-    NB_LINE_MAP='147'
-    NB_LINE_ENR='15'
-    EXITS=('0' '0' '11' '1' '1' '1')
+    NB_LINE_MAP=147
+    NB_LINE_ENR=15
+    EXITS=(0 0 11 1 1 1)
 
     local WARN1="[WARNING] Weight precision has been set without specify isotopic mass column in the fingerprint. [WARNING] By default, it has been set to the 2nd column."${MSG_NAME}
     local WARN2="[FATAL] Weight precision must be comprise between 1 and 100."
@@ -300,8 +300,8 @@ testsMass(){
 
     OUTPUTS=()
     OUTPUT=""
-    setMapLogDefault "50" "45.45" "1.93"
-    setEnrLogDefault "14" "14.43"
+    setMapLogDefault 50 45.45 1.93
+    setEnrLogDefault 14 14.43
     OUTPUTS[0]="$OUTPUT"
     OUTPUTS[1]="$OUTPUT"
     #fullOutput
@@ -376,8 +376,8 @@ testsNameMap(){
     NB_LINE_MAP=111
     NB_LINE_ENR=6
     WARNS=('' '' "[WARNING] You have set both name column and name mapping parameters and with different parameters. [WARNING] By default, the name mapping is activated with the column number of this parameter.")
-    setMapLogDefault "3" "2.73" "0.12"
-    setEnrLogDefault "5" "5.15"
+    setMapLogDefault 3 2.73 0.12
+    setEnrLogDefault 5 5.15
 
     test "warn2"
 }
