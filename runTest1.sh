@@ -36,6 +36,8 @@ setUp(){
     EXIT=0
     FUNC=${FUNCNAME[1]}
     OUTPUT=""
+
+    printf "\n- ${FUNC}: "
 }
 
 #tearDown(){
@@ -56,7 +58,7 @@ testError(){
         BOOLEAN_ERR="true"
     }
 
-    [ $1 -eq 0 ] && [[ ( ! -f ${OUTFILE1} ) ||  ( ! -f ${OUTFILE2}) ||  ( ! -f ${OUTFILE3}) ]] && {
+    [ ${EXIT} -eq 0 ] && [[ ( ! -f ${OUTFILE1} ) ||  ( ! -f ${OUTFILE2}) ||  ( ! -f ${OUTFILE3}) ]] && {
         for i in ${OUTFILES[@]}; do
 		testFileExist ${i}
 	done
@@ -138,12 +140,19 @@ setMultipleOutput(){
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
         OUTPUT="${TEMP_OUTPUT}"
         if [ ! -z $1 ]; then
-        IFS=' ' read -r -a PAR <<< "${MAP_PARS[i]}"
-            setMapLog ${PAR[0]} "metabolites" ${PAR[1]} ${PAR[2]} "2592" ${PAR[3]}
-        elif [ ! -z $1 ]; then
+            if [ $1 != "full" ]; then
+                IFS=' ' read -r -a PAR <<< "${MAP_PARS[i]}"
+                setMapLog ${PAR[0]} "metabolites" ${PAR[1]} ${PAR[2]} "2592" ${PAR[3]}
+                setEnrLogDefault ${ENR_PARS[i]}
+            else
+                setMapLog ${MAP_PARS[i]}
+                setEnrLog ${ENR_PARS[i]}
+            fi
+        else
             setMapLogDefault ${MAP_PARS[i]}
+            setEnrLogDefault ${ENR_PARS[i]}
         fi
-        setEnrLogDefault ${ENR_PARS[i]}
+
         OUTPUTS[i]="$OUTPUT"
 
     done
@@ -213,9 +222,11 @@ testsDefault(){
     test
 }
 
-testFileFiltering(){
+#Parsing
+testsFileFiltering(){
     setUp
 
+    #TESTS=('-f 13')
     TESTS=('-f 13' '-header')
     NB_LINE_MAPS=('5' '112')
     NB_LINE_ENRS=('19' '40')
@@ -230,19 +241,33 @@ testFileFiltering(){
     test "parameters"
 }
 
+testsCheckingFormat(){
+    setUp
+
+    TESTS=('-inchi 4 -l c,h,t -lWarn -noCheck')
+    #TESTS=('-inchi 4 -l c,h,t -lWarn' '-inchi 4 -l c,h,t' '-inchi 4 -l c,h,t -noCheck' '-inchi 4 -l c,h,t -lWarn -noCheck')
+    IF_CHECKFILE=(1 1 0 0)
+    NB_LINE_MAP=111
+    NB_LINE_ENR=4
+
+    #HEADER=('X' 'Y')
+    WARNS=("$MSG_NAME [WARNING] Checking format option has been disabled. [WARNING] Without checking, layer warnings option will be useless.")
+    #WARNS=("$MSG_NAME" "$MSG_NAME" "$MSG_NAME" "$MSG_NAME [WARNING] Checking format option has been disabled. [WARNING] Without checking, layer warnings option will be useless.")
+    setMapLogDefault 4 3.64 0.15
+    setEnrLogDefault 3 3.09
+
+    test "warn2"
+}
+
+#DBMapping
 testsMappingDB(){
     setUp
 
-    TESTS=('-inchi 4 -l')
-    #TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
-    NB_LINE_MAPS=(170)
-    NB_LINE_ENRS=(31)
-    MAP_PARS=('45 40.91 1.74')
-    ENR_PARS=('30 30.93')
-    #NB_LINE_MAPS=('178' '116' '116' '111' '111' '170' '112' '112' '178' '112' '178')
-    #NB_LINE_ENRS=('15' '39' '39' '4' '4' '31' '16' '14' '15' '15' '11')
-    #MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
-    #ENR_PARS=('14 14.43' '38 39.18' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
+    TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
+    NB_LINE_MAPS=('178' '116' '116' '111' '111' '170' '112' '112' '178' '112' '178')
+    NB_LINE_ENRS=('15' '39' '39' '4' '4' '31' '16' '14' '15' '15' '11')
+    MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
+    ENR_PARS=('14 14.43' '38 39.18' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
 
     WARN="${MSG_NAME}"
     setMultipleOutput
@@ -254,7 +279,7 @@ testsMass(){
     setUp
 
     #TESTS=('-mass 12 -prec 2' '-mass 12')
-    TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101' 'prec 0' 'prec -1')
+    TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101' '-prec 0' '-prec -1')
     NB_LINE_MAP='147'
     NB_LINE_ENR='15'
     EXITS=('0' '0' '11' '1' '1' '1')
@@ -347,7 +372,7 @@ testsNameNegative(){
     setUp
 
     #TESTS=('-name -1')
-    TESTS=('-name -1' '-nameCol -1 -name -1' '-nameCol -1' '-name -1' '-nameCol -1')
+    TESTS=('-name -1' '-nameCol -1 -name -1' '-name -1' '-nameCol -1')
 
     WARNS2=("$MSG_NEG_MAP" "$MSG_NEG_MAP" "$MSG_NEG_MAP" "$MSG_MAP")
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
@@ -362,28 +387,7 @@ testsNameNegative(){
 }
 
 
-#Entity type
-
-testBadMappedType(){
-    setUp
-
-    TESTS=('-t 0' '-t -1' '-t 7')
-    WARN=${WARN_TYPE[0]}'mapped'${WARN_TYPE[1]}
-    EXIT=1
-
-    test
-}
-
-testBadEnrichedType(){
-    setUp
-
-    TESTS=('-tEnr 0' '-tEnr -1' '-tEnr 7')
-    WARN=${WARN_TYPE[0]}'enriched'${WARN_TYPE[1]}
-    EXIT=1
-
-    test
-}
-
+#Separators
 testSep(){
     setUp
 
@@ -409,17 +413,79 @@ testSepID(){
     #TODO: debug differences between database in SBML and compare with sepID ; -chebi 3
 }
 
-testCheckingFormat(){
+#Entity type
+
+testsBadMappedType(){
     setUp
 
-    TESTS=('-inchi 4 -l c,h,t -lWarn' '-inchi 4 -l c,h,t' '-inchi 4 -l c,h,t -noCheck' '-inchi 4 -l c,h,t -lWarn -noCheck')
-    IF_CHECKFILE=(1 1 0 0)
-    NB_LINE='X'
-    HEADER=('X' 'Y')
-    WARN=($MSG_NAME $MSG_NAME $MSG_NAME "[WARNING] Checking format option has been disabled.\n[WARNING] Without checking, layer warnings option will be useless."$MSG_NAME)
+    TESTS=('-t 0' '-t -1' '-t 7')
+    WARN=${WARN_TYPE[0]}'mapped'${WARN_TYPE[1]}
+    EXIT=1
 
     test
 }
+
+testsBadEnrichedType(){
+    setUp
+
+    TESTS=('-tEnr 0' '-tEnr -1' '-tEnr 7')
+    WARN=${WARN_TYPE[0]}'enriched'${WARN_TYPE[1]}
+    EXIT=1
+
+    test
+}
+
+testEnrReaction(){
+    setUp
+
+    TESTS=('-tEnr 2')
+    NB_LINE_MAP=111
+    NB_LINE_ENR=254
+
+    WARN=$MSG_DEF
+    OUTPUT="${WARN} ${MSG_CHECK}"
+    setMapLogDefault 33 30.0 1.27
+    setEnrLog 253 "reactions" 4210 6.01
+
+    test
+}
+
+testMapReaction(){
+    setUp
+
+    INFILE="reactions_recon2.02.tsv"
+
+    TESTS=('-t 2')
+    NB_LINE_MAP=23
+    NB_LINE_ENR=9
+
+    WARN=$MSG_DEF
+    OUTPUT="${WARN} ${MSG_CHECK}"
+    setMapLogDefault 22 100.0 0.52
+    setEnrLog 8 XXX 8.25
+
+    test
+}
+
+testsGPR(){
+    setUp
+
+    INFILE="gpr_recon2.02.tsv"
+    SBML="recon2.02.xml"
+    TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3' '-t 5 -tEnr 6' '-t 4 -tEnr 6' '-t 6 -idSBML 3 -tEnr 5')
+
+    #TODO:
+    NB_LINE_MAPS=('' )
+    NB_LINE_ENRS=('' )
+    MAP_PARS=('' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '' '72 genes 72 100.0 1842 3.91')
+    ENR_PARS=('' '40 pathways 100 40.0' '40 pathways 100 40.0' '69 genes 1842 3.75' '' '69 proteins 1842 3.75')
+
+    #WARN="${MSG_DEF}"
+    setMultipleOutput "full"
+
+    test "parameters"
+}
+
 ########### MAIN ###########
 
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
@@ -428,18 +494,23 @@ printf "Tests in progress, could take a few minutes...\n"
 
 #testsDefault
 #testsMappingDB
+
 #testsMass
 #testsID_SBML
 #testsBadInChILayers
 #testsName
 #testsNameMap
 #testsNameNegative
-#testBadMappedType
-#testBadEnrichedType
+
+#testsBadMappedType
+#testsBadEnrichedType
 #testSep
 #testSepID
 #testsDefaultInChILayers
-testFileFiltering
+#testsFileFiltering
+#testMapReaction
+testEnrReaction
+#testsCheckingFormat
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
