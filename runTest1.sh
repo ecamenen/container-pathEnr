@@ -7,9 +7,9 @@
 #Copyright: PhenoMeNal/INRA Toulouse 2018
 
 #Settings files
-OUTFILE1="mapping.tsv"
-OUTFILE2="pathwayEnrichment.tsv"
-OUTFILE3="information.txt"
+OUTFILE1="temp/mapping.tsv"
+OUTFILE2="temp/pathwayEnrichment.tsv"
+OUTFILE3="temp/information.txt"
 
 #Settings warnings
 WARN_MAP=" By default, it was set on the SBML identifiers at the 2nd column of your dataset. Other mapping available: ChEBI, InChI, InChIKey, SMILES, CSID, PubChem, isotopic mass and HMDB (check -help)."
@@ -40,9 +40,9 @@ setUp(){
     printf "\n- ${FUNC}: "
 }
 
-#tearDown(){
-# rm -rf temp/
-# }
+tearDown(){
+  rm -rf temp/
+}
 
 ########### ERRORS CATCH ###########
 testError(){
@@ -83,7 +83,8 @@ testError(){
     testNbLine $3 ${OUTFILE1} ${ACTUAL_NB_LINE_MAP}
     testNbLine $4 ${OUTFILE2} ${ACTUAL_NB_LINE_ENR}
 
-    #rm $OUTFILE1 $OUTFILE2 $OUTFILE3
+    tearDown
+
     [ ${BOOLEAN_ERR} == "true" ] && {
 	    #echo $MSG
 	    ERRORS=${ERRORS}"\n***************\n##Test \"${TESTS[$2]}\" in $FUNC: \n$MSG"
@@ -171,7 +172,7 @@ run(){
     #java -jar pathwayEnrichment.jar -gal $@
     let NBTEST+=1
     let PARAMETER+=1
-    java -jar pathwayEnrichment.jar -gal ${OUTFILE3} $@ >> resultRuns.log 2>&1
+    java -jar pathwayEnrichment.jar -o2 ${OUTFILE1} -o3 ${OUTFILE2} -gal ${OUTFILE3} $@ >> resultRuns.log 2>&1
 }
 
 getElapsedTime(){
@@ -222,7 +223,10 @@ testsDefault(){
     test
 }
 
-#Parsing
+
+
+## Parsing ##
+
 testsFileFiltering(){
     setUp
 
@@ -259,7 +263,10 @@ testsCheckingFormat(){
     test "warn2"
 }
 
-#DBMapping
+
+
+## DBMapping ##
+
 testsMappingDB(){
     setUp
 
@@ -319,7 +326,10 @@ testsID_SBML(){
     test "warn"
 }
 
-#InChILayersCatch
+
+
+## InChILayersCatch ##
+
 testsBadInChILayers(){
     setUp
 
@@ -340,7 +350,8 @@ testsDefaultInChILayers(){
     test
 }
 
-#Name
+
+## Name ##
 
 testsName(){
     setUp
@@ -387,7 +398,9 @@ testsNameNegative(){
 }
 
 
-#Separators
+
+## Separators ##
+
 testSep(){
     setUp
 
@@ -413,7 +426,8 @@ testSepID(){
     #TODO: debug differences between database in SBML and compare with sepID ; -chebi 3
 }
 
-#Entity type
+
+## Entity type ##
 
 testsBadMappedType(){
     setUp
@@ -475,7 +489,6 @@ testsGPR(){
     #TESTS=('-t 5')
     TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3' '-t 5 -tEnr 6' '-t 4 -tEnr 6' '-t 6 -idSBML 3 -tEnr 5')
 
-    #TODO:
     NB_LINE_MAPS=(73 73 73 73 73 73)
     NB_LINE_ENRS=(41 41 41 69 65 69)
     MAP_PARS=('72 enzymes 72 100.0 2682 2.68' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '72 enzymes 72 100.0 2682 2.68' '72 genes 72 100.0 1842 3.91')
@@ -493,26 +506,27 @@ START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take a few minutes...\n"
 #mkdir temp
 
-#testsDefault
-#testsMappingDB
-
-#testsMass
-#testsID_SBML
-#testsBadInChILayers
-#testsName
-#testsNameMap
-#testsNameNegative
-
-#testsBadMappedType
-#testsBadEnrichedType
-#testSep
-#testSepID
-#testsDefaultInChILayers
-#testsFileFiltering
-#testMapReaction
-#testEnrReaction
-#testsCheckingFormat
+:'
+testsDefault
+testsMappingDB
+testsMass
+testsID_SBML
+testsBadInChILayers
+testsName
+testsNameMap
+testsNameNegative
+testsBadMappedType
+testsBadEnrichedType
+testSep
+testsDefaultInChILayers
+testsFileFiltering
+testMapReaction
+testEnrReaction
+testsCheckingFormat
 testsGPR
+'
+
+testSepID
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
