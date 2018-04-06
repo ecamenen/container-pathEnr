@@ -35,6 +35,7 @@ setUp(){
     PARAMETER=0
     EXIT=0
     FUNC=${FUNCNAME[1]}
+    OUTPUT=""
 }
 
 #tearDown(){
@@ -133,20 +134,26 @@ setDoubletsLog(){
 
 setMultipleOutput(){
     OUTPUTS=()
+    local TEMP_OUTPUT="${OUTPUT}"
     for i in `seq 0 $((${#TESTS[@]} -1))`; do
-        OUTPUT=""
-        setMapLogDefault ${MAP_PARS[i]}
-        #echo "$OUTPUT"
+        OUTPUT="${TEMP_OUTPUT}"
+        if [ ! -z $1 ]; then
+        IFS=' ' read -r -a PAR <<< "${MAP_PARS[i]}"
+            setMapLog ${PAR[0]} "metabolites" ${PAR[1]} ${PAR[2]} "2592" ${PAR[3]}
+        elif [ ! -z $1 ]; then
+            setMapLogDefault ${MAP_PARS[i]}
+        fi
         setEnrLogDefault ${ENR_PARS[i]}
         OUTPUTS[i]="$OUTPUT"
+
     done
 }
 
 setMappingDefaultParameters(){
-    NB_LINE_MAP='111'
-    NB_LINE_ENR='40'
-    setMapLogDefault "33" "30.0" "1.27"
-    setEnrLogDefault "39" "40.21"
+    NB_LINE_MAP=111
+    NB_LINE_ENR=40
+    setMapLogDefault 33 30.0 1.27
+    setEnrLogDefault 39 40.21
 }
 
 ########### RUN PROCESS ###########
@@ -186,7 +193,6 @@ test(){
             WARN="${WARNS[i]}"
         fi
     fi
-
         printError ${ACTUAL_EXIT} ${i} ${NB_LINE_MAP} ${NB_LINE_ENR}
     done
 }
@@ -196,8 +202,8 @@ test(){
 testsDefault(){
     setUp
 
-    TESTS=('-t 1' '-tEnr 3')
-    #TESTS=('' '-t 1' '-tEnr 3' '-s data/recon2.02_without_compartment.xml' '-sep \t' '-sepID ;')
+    #TESTS=('-t 1' '-tEnr 3')
+    TESTS=('' '-t 1' '-tEnr 3' '-s data/recon2.02_without_compartment.xml' '-sep \t' '-sepID ;')
 
     WARN="${MSG_DEF}"
     #fullOutput
@@ -207,15 +213,36 @@ testsDefault(){
     test
 }
 
+testFileFiltering(){
+    setUp
+
+    TESTS=('-f 13' '-header')
+    NB_LINE_MAPS=('5' '112')
+    NB_LINE_ENRS=('19' '40')
+    MAP_PARS=('3 4 75.0 0.12' '33 111 29.73 1.27')
+    ENR_PARS=('18 18.56' '39 40.21')
+    #TODO: check -header nb map lines with default
+
+    WARN="${MSG_DEF}"
+    OUTPUT="${WARN} ${MSG_CHECK}"
+    setMultipleOutput "fingerprint_length"
+
+    test "parameters"
+}
+
 testsMappingDB(){
     setUp
 
-    TESTS=('-chebi 3' '-inchi 4')
+    TESTS=('-inchi 4 -l')
     #TESTS=('-chebi 3' '-inchi 4' '-inchi 4 -l c,h' '-inchi 4 -l c,h,t' '-inchi 4 -l t,h,c' '-inchi 4 -l' '-inchikey 5' '-kegg 6' '-pubchem 7' '-hmdb 8' '-csid 9')
-    NB_LINE_MAPS=('178' '116' '116' '111' '111' '170' '112' '112' '178' '112' '178')
-    NB_LINE_ENRS=('15' '39' '39' '4' '4' '31' '16' '14' '15' '15' '11')
-    MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
-    ENR_PARS=('14 14.43' '38 39.18' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
+    NB_LINE_MAPS=(170)
+    NB_LINE_ENRS=(31)
+    MAP_PARS=('45 40.91 1.74')
+    ENR_PARS=('30 30.93')
+    #NB_LINE_MAPS=('178' '116' '116' '111' '111' '170' '112' '112' '178' '112' '178')
+    #NB_LINE_ENRS=('15' '39' '39' '4' '4' '31' '16' '14' '15' '15' '11')
+    #MAP_PARS=('14 12.73 0.54' '33 30.0 1.27' '33 30.0 1.27' '4 3.64 0.15' '4 3.64 0.15' '45 40.91 1.74' '14 12.73 0.54' '12 10.91 0.46' '14 12.73 0.54' '13 11.82 0.5' '9 8.18 0.35')
+    #ENR_PARS=('14 14.43' '38 39.18' '38 39.18' '3 3.09' '3 3.09' '30 30.93' '15 15.46' '13 13.4' '14 14.43' '14 14.43' '10 10.31')
 
     WARN="${MSG_NAME}"
     setMultipleOutput
@@ -226,8 +253,8 @@ testsMappingDB(){
 testsMass(){
     setUp
 
-    TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101')
-    #TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101' 'prec 0' 'prec -1')
+    #TESTS=('-mass 12 -prec 2' '-mass 12')
+    TESTS=('-mass 12 -prec 2' '-mass 12' '-prec 2' '-prec 101' 'prec 0' 'prec -1')
     NB_LINE_MAP='147'
     NB_LINE_ENR='15'
     EXITS=('0' '0' '11' '1' '1' '1')
@@ -245,6 +272,8 @@ testsMass(){
     #fullOutput
     OUTPUTS[2]="${WARN1} [FATAL] All the values of the selected database(s) are badly formatted. Please check the column number set for these databases. -noCheck to ignore the bad format exit and run the analysis anyway."
     OUTPUTS[3]="${WARN2}"
+    OUTPUTS[4]="${WARN2}"
+    OUTPUTS[5]="${WARN2}"
 
     test "errors"
 }
@@ -265,13 +294,23 @@ testsID_SBML(){
     test "warn"
 }
 
+#InChILayersCatch
 testsBadInChILayers(){
     setUp
 
     TESTS=('-l chp' '-l c,hp' '-l c,' '-l xertg')
     WARN="-l parameter badly formatted: it must be a list containing the number - separated by comma without blank spaces - of the InChi's layer concerned by the mapping (by default: c,h; for a mapping including all the layers, enter c,h,q,p,b,t,i,f,r; for a mapping on formula layer only, enter the -l option with no parameter)"
-    OUTPUT=""
     EXIT=1
+
+    test
+}
+
+testsDefaultInChILayers(){
+    setUp
+
+    TESTS=('-l')
+    WARN="[WARNING] InChI layers parameters set without having specified the InChI column (-inchi). [WARNING] By default, the column used for InChI mapping is the 2nd of your dataset. "$MSG_NAME
+    EXIT=11
 
     test
 }
@@ -298,7 +337,6 @@ testsNameMap(){
     NB_LINE_MAP=111
     NB_LINE_ENR=6
     WARNS=('' '' "[WARNING] You have set both name column and name mapping parameters and with different parameters. [WARNING] By default, the name mapping is activated with the column number of this parameter.")
-    OUTPUT=""
     setMapLogDefault "3" "2.73" "0.12"
     setEnrLogDefault "5" "5.15"
 
@@ -351,7 +389,7 @@ testSep(){
 
     TESTS=('-sep ;')
     WARN="$MSG_DEF $MSG_CHECK [FATAL] There is no match for this network ! Common mistakes: wrong type of mapping (by default on the SBML ID and the name of the metabolites), wrong number of column from the dataset or wrong type of bioEntity (or bad SBML). Please check your settings and rerun the analysis."
-    EXIT='20'
+    EXIT=20
 
     test
 }
@@ -364,7 +402,6 @@ testSepID(){
     NB_LINE_ENR=15
 
     WARN="$MSG_NAME [WARNING] Some database identifiers are badly formatted, please take a look to \"checking_format.tsv\""
-    OUTPUT=""
     setMapLogDefault 14 12.73 0.54
     setEnrLogDefault 14 14.43
 
@@ -372,6 +409,17 @@ testSepID(){
     #TODO: debug differences between database in SBML and compare with sepID ; -chebi 3
 }
 
+testCheckingFormat(){
+    setUp
+
+    TESTS=('-inchi 4 -l c,h,t -lWarn' '-inchi 4 -l c,h,t' '-inchi 4 -l c,h,t -noCheck' '-inchi 4 -l c,h,t -lWarn -noCheck')
+    IF_CHECKFILE=(1 1 0 0)
+    NB_LINE='X'
+    HEADER=('X' 'Y')
+    WARN=($MSG_NAME $MSG_NAME $MSG_NAME "[WARNING] Checking format option has been disabled.\n[WARNING] Without checking, layer warnings option will be useless."$MSG_NAME)
+
+    test
+}
 ########### MAIN ###########
 
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
@@ -388,8 +436,10 @@ printf "Tests in progress, could take a few minutes...\n"
 #testsNameNegative
 #testBadMappedType
 #testBadEnrichedType
-testSep
+#testSep
 #testSepID
+#testsDefaultInChILayers
+testFileFiltering
 
 #rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
