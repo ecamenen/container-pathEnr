@@ -36,12 +36,15 @@ setUp(){
     EXIT=0
     FUNC=${FUNCNAME[1]}
     OUTPUT=""
+    mkdir temp
 
     printf "\n- ${FUNC}: "
+
 }
 
 tearDown(){
   rm -rf temp/
+  [ -f checking_format.tsv ] && rm checking_format.tsv
 }
 
 ########### ERRORS CATCH ###########
@@ -475,8 +478,8 @@ testMapReaction(){
 
     WARN=$MSG_DEF
     OUTPUT="${WARN} ${MSG_CHECK}"
-    setMapLogDefault 22 100.0 0.52
-    setEnrLog 8 XXX 8.25
+    setMapLog 22 "reactions" 22 100.0 4210 0.52
+    setEnrLogDefault 8 8.25
 
     test
 }
@@ -504,9 +507,7 @@ testsGPR(){
 
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take a few minutes...\n"
-#mkdir temp
 
-:'
 testsDefault
 testsMappingDB
 testsMass
@@ -518,17 +519,15 @@ testsNameNegative
 testsBadMappedType
 testsBadEnrichedType
 testSep
+testSepID
 testsDefaultInChILayers
 testsFileFiltering
 testMapReaction
 testEnrReaction
 testsCheckingFormat
 testsGPR
-'
 
-testSepID
 
-#rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
 getElapsedTime ${START_TIME}
 [[ -z ${ERRORS} ]] || exit 1
