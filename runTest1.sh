@@ -609,7 +609,7 @@ mkdir temp/
 [ -d bad ] && rm -rf bad/
 mkdir bad/
 
-: '
+
 testsDefault
 
 testsFileFiltering
@@ -630,10 +630,10 @@ testSep
 testSepID
 
 testsBadMappedType
-testsBadEnrichedType'
+testsBadEnrichedType
 testMapReaction
-#testEnrReaction
-#testsGPR
+testEnrReaction
+testsGPR
 
 
 rm -r temp/
