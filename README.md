@@ -14,7 +14,7 @@ Chemical entities (metabolites, reactions, enzymes, proteins or genes) belonging
 - a ```metabolic network``` (SBML) : optional, by default Recon v2.02 SBML file (without compartments) (Thiele et al., 2013).
 
 ### Output files
-- ```checking_format.tsv``` (optional): each line corresponds to an error in a database identifier in the dataset file: the n° of line, the name of the bio-entity, the concerned database, the InChI layer (optional) and the corresponding wrong value.
+- ```checking_format.tsv``` (optional, if bad identifier are detected): each line corresponds to an error in a database identifier in the dataset file: the n° of line, the name of the bio-entity, the concerned database, the InChI layer (optional) and the corresponding wrong value.
 - ```mapping.tsv```: each line corresponds to the bio-entities (metabolites, reactions, genes,...) from the dataset file: the success or the failure of the mapping, their names in the dataset, those of one or several elements of the network in case of matching, their identifier in the SBML and the matched values in the fingerprint and in the SBML.
 - ```pathwayEnrichment.tsv```: contains for each pathway associated with the mapped entities: their names, the number of mapped entities and their coverage on the total of bio-entities contained in the studied pathway, the Fisher's p value of enrichment, the Bonferroni and the Benjamini-Hochberg corrections, the list of the mapped bio-entities and their corresponding name and identifier in the SBML.
 - ```information.txt``` (if -gal or -galaxy parameter is activated): contains general information about mapping and pathway enrichment results. This file contains the total number of mapped bio-entities with the coverage in the dataset and in the network, the total number of enriched pathways and the coverage in the network. Eventually, warnings alert about default settings or doublets in mapping which are discarded from the pathway analysis. In this last case, the user must choose the corresponded bio-entities' identifier in the network in order to add them in a new column of the fingerprint dataset. Then, the program must be relaunched by using the SBML identifier mapping only (-idSBML <columnNumber>).
@@ -54,10 +54,11 @@ docker run docker-registry.phenomenal-h2020.eu/phnmnl/pathwayenrichment -i <inpu
 With optional parameters:
 
 ```
-docker run docker-registry.phenomenal-h2020.eu/phnmnl/pathwayenrichment -i <input_file> [-s <sbml_file>] [-o1 <checking_output_file>] [-o2 <mapping_output_file>] [-o3 <pathway_enrichment_output_file>] [-f <filtered_column>] [-sep <separator_column>] [-sep <separator_identifiers>] [--header] [-t <bio_entity_from_fingerprint>] [-tEnr <bio_entity_to_enrich>] [-name <name_column>] [-idSBML <SBML_ID_column>] [-chebi <ChEBI_ID_column>] [-kegg <KEGG_ID_column>] [-hmdb <HMDB_ID_column>] [-csid <ChemSpider_ID_column>] [-pubChem <PubChem_ID_column>] [-mass <isotopic_mass_column>] [-inchikey <InChIKey_column>] [-inchi <InChI_column>] [-l <layer_selection>] [-h]
+docker run docker-registry.phenomenal-h2020.eu/phnmnl/pathwayenrichment -i <input_file> [-h] [-v] [-s <sbml_file>] [-o1 <checking_output_file>] [-o2 <mapping_output_file>] [-o3 <pathway_enrichment_output_file>] [-f <filtered_column>] [-sep <separator_column>] [-header] [-sepID <separator_identifiers>] [-noCheck] [-lWarn] [-nameCol <name_column] [-name <name_column>] [-idSBML <SBML_ID_column>] [-chebi <ChEBI_ID_column>] [-kegg <KEGG_ID_column>] [-hmdb <HMDB_ID_column>] [-csid <ChemSpider_ID_column>] [-pubChem <PubChem_ID_column>] [-mass <isotopic_mass_column>] [-prec <precision_error>] [-inchikey <InChIKey_column>] [-inchi <InChI_column>] [-l <layer_selection>] [-t <bio_entity_from_fingerprint>] [-tEnr <bio_entity_to_enrich>]
 ```
 
 - ```-h (-help)``` for printing the help.
+- ```-v (-version)``` for printing the tool's version.
 
 ##### Files parameters
 - ```-i (-inFile)```, ```-s (-sbml)``` (STRING) are used to specify the inputs files. Only ```-i``` - corresponding to the dataset of fingerprint - is required. ```-s``` - the sbml file where the network is extracted - used Recon2.02 network by default (Thiele et al., 2013).
