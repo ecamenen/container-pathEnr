@@ -34,17 +34,29 @@ setUp(){
     SBML="recon2.02_without_compartment.xml"
     PARAMETER=0
     EXIT=0
+    NB_LINE_MAP=0
+    NB_LINE_ENR=0
     FUNC=${FUNCNAME[1]}
     OUTPUT=""
-    mkdir temp
+    WARN="xsdfegr"
+
+    TESTS=()
+    EXITS=()
+    NB_LINE_MAPS=()
+    NB_LINE_ENRS=()
+    OUTPUTS=()
+    WARN=()
+    MAP_PAR=()
+    ENR_PARS=()
 
     printf "\n- ${FUNC}: "
 
 }
 
 tearDown(){
-  rm -rf temp/
-  [ -f checking_format.tsv ] && rm checking_format.tsv
+    rm -r temp/
+    mkdir temp/
+    [ -f checking_format.tsv ] && rm checking_format.tsv
 }
 
 ########### ERRORS CATCH ###########
@@ -52,9 +64,9 @@ testError(){
     local BOOLEAN_ERR="false"
     local MSG=""
     local OUTFILES=(${OUTFILE1} ${OUTFILE2} ${OUTFILE3})
-    local ACTUAL_NB_LINE_MAP=$( wc ${OUTFILE1} | awk '{print $1}')
-    local ACTUAL_NB_LINE_ENR=$( wc ${OUTFILE2} | awk '{print $1}')
-    local ACTUAL_OUTPUT=$(cat $OUTFILE3 | tr '\n' ' ' )
+    [ -f ${OUTFILE1} ] && local ACTUAL_NB_LINE_MAP=$( wc ${OUTFILE1} | awk '{print $1}')
+    [ -f ${OUTFILE2} ] && local ACTUAL_NB_LINE_ENR=$( wc ${OUTFILE2} | awk '{print $1}')
+    local ACTUAL_OUTPUT=$(cat ${OUTFILE3} | tr '\n' ' ' )
 
     [ $1 -ne ${EXIT} ] && {
         MSG=${MSG}"Program exited with bad error code: $1.\n"
@@ -251,15 +263,14 @@ testsFileFiltering(){
 testsCheckingFormat(){
     setUp
 
-    TESTS=('-inchi 4 -l c,h,t -lWarn -noCheck')
-    #TESTS=('-inchi 4 -l c,h,t -lWarn' '-inchi 4 -l c,h,t' '-inchi 4 -l c,h,t -noCheck' '-inchi 4 -l c,h,t -lWarn -noCheck')
+    #TESTS=('-inchi 4 -l c,h,t -lWarn -noCheck')
+    TESTS=('-inchi 4 -l c,h,t -lWarn' '-inchi 4 -l c,h,t' '-inchi 4 -l c,h,t -noCheck' '-inchi 4 -l c,h,t -lWarn -noCheck')
     IF_CHECKFILE=(1 1 0 0)
     NB_LINE_MAP=111
     NB_LINE_ENR=4
 
     #HEADER=('X' 'Y')
-    WARNS=("$MSG_NAME [WARNING] Checking format option has been disabled. [WARNING] Without checking, layer warnings option will be useless.")
-    #WARNS=("$MSG_NAME" "$MSG_NAME" "$MSG_NAME" "$MSG_NAME [WARNING] Checking format option has been disabled. [WARNING] Without checking, layer warnings option will be useless.")
+    WARNS=("$MSG_NAME" "$MSG_NAME" "$MSG_NAME" "$MSG_NAME [WARNING] Checking format option has been disabled. [WARNING] Without checking, layer warnings option will be useless.")
     setMapLogDefault 4 3.64 0.15
     setEnrLogDefault 3 3.09
 
@@ -343,11 +354,11 @@ testsBadInChILayers(){
     test
 }
 
-testsDefaultInChILayers(){
+testDefaultInChILayers(){
     setUp
 
     TESTS=('-l')
-    WARN="[WARNING] InChI layers parameters set without having specified the InChI column (-inchi). [WARNING] By default, the column used for InChI mapping is the 2nd of your dataset. "$MSG_NAME
+    WARN="[WARNING] InChI layers parameters set without having specified the InChI column (-inchi). [WARNING] By default, the column used for InChI mapping is the 2nd of your dataset. "${MSG_NAME}
     EXIT=11
 
     test
@@ -436,7 +447,7 @@ testsBadMappedType(){
     setUp
 
     TESTS=('-t 0' '-t -1' '-t 7')
-    WARN=${WARN_TYPE[0]}'mapped'${WARN_TYPE[1]}
+    WARN="${WARN_TYPE[0]}mapped${WARN_TYPE[1]}"
     EXIT=1
 
     test
@@ -446,7 +457,7 @@ testsBadEnrichedType(){
     setUp
 
     TESTS=('-tEnr 0' '-tEnr -1' '-tEnr 7')
-    WARN=${WARN_TYPE[0]}'enriched'${WARN_TYPE[1]}
+    WARN="${WARN_TYPE[0]}enriched${WARN_TYPE[1]}"
     EXIT=1
 
     test
@@ -459,7 +470,7 @@ testEnrReaction(){
     NB_LINE_MAP=111
     NB_LINE_ENR=254
 
-    WARN=$MSG_DEF
+    WARN="${MSG_DEF}"
     OUTPUT="${WARN} ${MSG_CHECK}"
     setMapLogDefault 33 30.0 1.27
     setEnrLog 253 "reactions" 4210 6.01
@@ -476,7 +487,7 @@ testMapReaction(){
     NB_LINE_MAP=23
     NB_LINE_ENR=9
 
-    WARN=$MSG_DEF
+    WARN="${MSG_DEF}"
     OUTPUT="${WARN} ${MSG_CHECK}"
     setMapLog 22 "reactions" 22 100.0 4210 0.52
     setEnrLogDefault 8 8.25
@@ -497,6 +508,7 @@ testsGPR(){
     MAP_PARS=('72 enzymes 72 100.0 2682 2.68' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '72 enzymes 72 100.0 2682 2.68' '72 genes 72 100.0 1842 3.91')
     ENR_PARS=('40 pathways 100 40.0' '40 pathways 100 40.0' '40 pathways 100 40.0' '69 genes 1842 3.75' '65 genes 1842 3.53' '69 proteins 1842 3.75')
 
+    WARN=""
     #WARN="${MSG_DEF}"
     setMultipleOutput "full"
 
@@ -506,28 +518,36 @@ testsGPR(){
 ########### MAIN ###########
 
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
-printf "Tests in progress, could take a few minutes...\n"
+printf "Tests in progress, could take an hour...\n"
+mkdir temp/
 
 testsDefault
+
+testsFileFiltering
+testsCheckingFormat
+
 testsMappingDB
 testsMass
 testsID_SBML
+
 testsBadInChILayers
+testDefaultInChILayers
+
 testsName
 testsNameMap
 testsNameNegative
-testsBadMappedType
-testsBadEnrichedType
+
 testSep
 testSepID
-testsDefaultInChILayers
-testsFileFiltering
+
+testsBadMappedType
+testsBadEnrichedType
 testMapReaction
 testEnrReaction
-testsCheckingFormat
 testsGPR
 
 
+rm -r temp/
 printf "\n$NBTEST tests, $NBFAIL failed.$ERRORS\n"
 getElapsedTime ${START_TIME}
 [[ -z ${ERRORS} ]] || exit 1
