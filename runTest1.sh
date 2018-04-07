@@ -49,6 +49,9 @@ setUp(){
     MAP_PAR=()
     ENR_PARS=()
 
+    setHeaderMap
+    setHeaderEnrDefault
+
     printf "\n- ${FUNC}: "
 
 }
@@ -64,8 +67,14 @@ testError(){
     local BOOLEAN_ERR="false"
     local MSG=""
     local OUTFILES=(${OUTFILE1} ${OUTFILE2} ${OUTFILE3})
-    [ -f ${OUTFILE1} ] && local ACTUAL_NB_LINE_MAP=$( wc ${OUTFILE1} | awk '{print $1}')
-    [ -f ${OUTFILE2} ] && local ACTUAL_NB_LINE_ENR=$( wc ${OUTFILE2} | awk '{print $1}')
+    [ -f ${OUTFILE1} ] && {
+        local ACTUAL_NB_LINE_MAP=$( wc ${OUTFILE1} | awk '{print $1}')
+        local ACTUAL_HEADER_MAP=$( head -n 1 ${OUTFILE1} | tr '\n' ' ' )
+    }
+    [ -f ${OUTFILE2} ] && {
+        local ACTUAL_NB_LINE_ENR=$( wc ${OUTFILE2} | awk '{print $1}')
+        local ACTUAL_HEADER_ENR=$( head -n 1 ${OUTFILE2} | tr '\n' ' ' )
+    }
     local ACTUAL_OUTPUT=$(cat ${OUTFILE3} | tr '\n' ' ' )
 
     [ $1 -ne ${EXIT} ] && {
@@ -95,6 +104,13 @@ testError(){
         BOOLEAN_ERR="true"
     fi
 
+
+    echo "$HEADER_MAP" > coucou
+    echo "$ACTUAL_HEADER_MAP" > coucou2
+
+    testHeader "${OUTFILE1}" "${ACTUAL_HEADER_MAP}" "${HEADER_MAP}"
+    testHeader "${OUTFILE2}" "${ACTUAL_HEADER_ENR}" "${HEADER_ENR}"
+
     testNbLine $3 ${OUTFILE1} ${ACTUAL_NB_LINE_MAP}
     testNbLine $4 ${OUTFILE2} ${ACTUAL_NB_LINE_ENR}
 
@@ -106,6 +122,16 @@ testError(){
 	    return 1
     }
     return 0
+}
+
+testHeader(){
+    if [ -f $1 ] && [ "$2" != "$3" ]; then {
+        echo $2
+        echo $3
+        MSG=${MSG}"Actual and expected headers are dissimilar.\n"
+        BOOLEAN_ERR="true"
+    }
+    fi
 }
 
 testFileExist(){
@@ -148,6 +174,18 @@ setEnrLogDefault(){
 
 setDoubletsLog(){
     OUTPUT+=" [WARNING] There are $1 possible matches for $2."
+}
+
+setHeaderMap(){
+    HEADER_MAP="Mapped	Name (Fingerprint)	Name (SBML)	SBML ID	Matched value (Fingerprint)	Matched value (SBML) "
+}
+
+setHeaderEnr(){
+    HEADER_ENR="$1 name	Coverage (%)	Nb. of mapped	P-value	Bonferroni corrected p-value	BH corrected p-value	Mapped $2 (SBML)	Mapped $2 (fingerprint)	Mapped $2 ID	Nb. of unmapped (pathway)	Nb. of unmapped (fingerprint)	Nb. of remaining (network) "
+}
+
+setHeaderEnrDefault(){
+    setHeaderEnr Pathway metabolites
 }
 
 setMultipleOutput(){
@@ -216,6 +254,11 @@ test(){
             WARN="${WARNS[i]}"
         elif [ $1 == "warn2" ]; then
             WARN="${WARNS[i]}"
+        elif [ $1 == "type" ]; then
+            OUTPUT="${OUTPUTS[i]}"
+            setHeaderEnr ${HEAD_PARS[i]}
+            NB_LINE_MAP=${NB_LINE_MAPS[i]}
+            NB_LINE_ENR=${NB_LINE_ENRS[i]}
         fi
     fi
         printError ${ACTUAL_EXIT} ${i} ${NB_LINE_MAP} ${NB_LINE_ENR}
@@ -486,6 +529,7 @@ testMapReaction(){
     TESTS=('-t 2')
     NB_LINE_MAP=23
     NB_LINE_ENR=9
+    setHeaderEnr 'Pathway' 'reactions'
 
     WARN="${MSG_DEF}"
     OUTPUT="${WARN} ${MSG_CHECK}"
@@ -500,19 +544,20 @@ testsGPR(){
 
     INFILE="gpr_recon2.02.tsv"
     SBML="recon2.02.xml"
-    #TESTS=('-t 5')
-    TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3' '-t 5 -tEnr 6' '-t 4 -tEnr 6' '-t 6 -idSBML 3 -tEnr 5')
+    TESTS=('-t 4')
+    #TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3' '-t 5 -tEnr 6' '-t 4 -tEnr 6' '-t 6 -idSBML 3 -tEnr 5')
 
     NB_LINE_MAPS=(73 73 73 73 73 73)
     NB_LINE_ENRS=(41 41 41 69 65 69)
     MAP_PARS=('72 enzymes 72 100.0 2682 2.68' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '72 enzymes 72 100.0 2682 2.68' '72 genes 72 100.0 1842 3.91')
     ENR_PARS=('40 pathways 100 40.0' '40 pathways 100 40.0' '40 pathways 100 40.0' '69 genes 1842 3.75' '65 genes 1842 3.53' '69 proteins 1842 3.75')
+    HEAD_PARS=('Pathway enzymes' 'Pathway proteins' 'Pathway genes' 'Genes proteins' 'Genes enzymes' 'Enzymes proteins')
 
     WARN=""
     #WARN="${MSG_DEF}"
     setMultipleOutput "full"
 
-    test "parameters"
+    test "type"
 }
 
 ########### MAIN ###########
@@ -520,7 +565,7 @@ testsGPR(){
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take an hour...\n"
 mkdir temp/
-
+: '
 testsDefault
 
 testsFileFiltering
@@ -541,9 +586,9 @@ testSep
 testSepID
 
 testsBadMappedType
-testsBadEnrichedType
-testMapReaction
-testEnrReaction
+testsBadEnrichedType'
+#testMapReaction
+#testEnrReaction
 testsGPR
 
 
