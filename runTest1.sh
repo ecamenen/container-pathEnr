@@ -92,27 +92,30 @@ testError(){
 
     if [[ ${ACTUAL_OUTPUT} != *"$WARN"* ]]; then
         MSG=${MSG}"Expected warnings not found.\n"
-        echo "$WARN"
-        echo "$ACTUAL_OUTPUT"
+        echo "$WARN" >> temp/warn.bad
+        echo "$ACTUAL_OUTPUT"  >> bad/war.log
         BOOLEAN_ERR="true"
     fi
 
     if [[ ${ACTUAL_OUTPUT} != *"$OUTPUT"* ]]; then
         MSG=${MSG}"Expected output not found.\n"
-        echo "$OUTPUT"
-        echo "$ACTUAL_OUTPUT"
+        echo "$OUTPUT" >> temp/output.bad
+        echo "$ACTUAL_OUTPUT" >> bad/output.log
         BOOLEAN_ERR="true"
     fi
 
 
-    echo "$HEADER_MAP" > coucou
-    echo "$ACTUAL_HEADER_MAP" > coucou2
+    if [ -f ${OUTFILE1} ]; then
+        testHeader "${OUTFILE1}" "${ACTUAL_HEADER_MAP}" "${HEADER_MAP}"
+        testNbLine $3 ${OUTFILE1} ${ACTUAL_NB_LINE_MAP}
+        testRegexMap
+    fi
 
-    testHeader "${OUTFILE1}" "${ACTUAL_HEADER_MAP}" "${HEADER_MAP}"
-    testHeader "${OUTFILE2}" "${ACTUAL_HEADER_ENR}" "${HEADER_ENR}"
-
-    testNbLine $3 ${OUTFILE1} ${ACTUAL_NB_LINE_MAP}
-    testNbLine $4 ${OUTFILE2} ${ACTUAL_NB_LINE_ENR}
+    if [ -f ${OUTFILE2} ]; then
+        testHeader "${OUTFILE2}" "${ACTUAL_HEADER_ENR}" "${HEADER_ENR}"
+        testNbLine $4 ${OUTFILE2} ${ACTUAL_NB_LINE_ENR}
+        testRegexEnr
+    fi
 
     tearDown
 
@@ -125,10 +128,10 @@ testError(){
 }
 
 testHeader(){
-    if [ -f $1 ] && [ "$2" != "$3" ]; then {
+    if [ "$2" != "$3" ]; then {
         echo $2
         echo $3
-        MSG=${MSG}"Actual and expected headers are dissimilar.\n"
+        MSG=${MSG}"Actual and expected headers are dissimilar in $1.\n"
         BOOLEAN_ERR="true"
     }
     fi
@@ -139,7 +142,7 @@ testFileExist(){
 }
 
 testNbLine(){
-    [ -f $2 ] && [ $3 -ne $1 ] && {
+    [ $3 -ne $1 ] && {
         MSG=${MSG}"Expected $1 lines in $2. Actual have $3 lines.\n"
         BOOLEAN_ERR="true"
     }
@@ -154,6 +157,44 @@ printError(){
     fi
 }
 
+testRegexEnr(){
+    AWK=$(
+tail -n +2 ${OUTFILE2} | awk -F"\\t" '
+$1 =="" {print "line "NR" : "$1 }
+$2 < 0 || $2 !~ /^[0-9]+\.[0-9]+/ {print "line "NR" : "$2 }
+$3 < 0 || $3 !~ /^[0-9]+$/ {print "line "NR" : "$3 }
+$4 < 0 || $4 > 1 || $4 !~ /^[01]\.[0-9]+$/ {print "line "NR" : "$4 }
+$5 < 0 || $5 !~ /^[0-9]+\.[0-9]+/ {print "line "NR" : "$5 }
+$6 < 0 || $6 > 1 || $6 !~ /^[01]\.[0-9]+$/ {print "line "NR" : "$6 }
+{ for (i=7;i<=9;i++) {
+if ($i ~ /;{2,}/ || $i ~ /^;*$/ ) {print "line "NR" : "$i } }
+}
+{ for (i=10;i<=NF;i++) {
+if ($i < 0 || $i !~ /^[0-9]+$/ ) {print "line "NR" : "$i } }
+}
+')
+
+    [[ ${AWK} != "" ]] && {
+        echo "\"${AWK}\"" >> bad/awk_enr.log
+        MSG=${MSG}"Enrichment file badly formatted"
+        BOOLEAN_ERR="true"
+    }
+}
+
+testRegexMap(){
+    AWK=$(
+tail -n +2 ${OUTFILE1} | awk -F"\\t" '
+$1 == "true" && ( $2 =="" || $3 =="" || $4 =="" || $5 =="" || $6 =="" ) {print "line "NR" : "$0 }
+$1 == "false" && ( $2 =="" || $3 !="" || $4 !="" || $5 !="" || $6 !="" ) {print "line "NR" : "$0 }
+$1 != "false" && $1 != "true" {print "line "NR" : "$0 }
+')
+
+    [[ ${AWK} != "" ]] && {
+        echo "\"${AWK}\"" >> bad/awk_map.log
+        MSG=${MSG}"Mapping file badly formatted"
+        BOOLEAN_ERR="true"
+    }
+}
 
 ########### LOG WRITING ###########
 setMapLog(){
@@ -565,6 +606,9 @@ testsGPR(){
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take an hour...\n"
 mkdir temp/
+[ -d bad ] && rm -rf bad/
+mkdir bad/
+
 : '
 testsDefault
 
@@ -587,9 +631,9 @@ testSepID
 
 testsBadMappedType
 testsBadEnrichedType'
-#testMapReaction
+testMapReaction
 #testEnrReaction
-testsGPR
+#testsGPR
 
 
 rm -r temp/
