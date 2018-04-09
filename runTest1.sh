@@ -129,8 +129,8 @@ testError(){
 
 testHeader(){
     if [ "$2" != "$3" ]; then {
-        echo $2
-        echo $3
+        echo $3 >> bad/header.bad
+        echo $2  >> bad/header.bad
         MSG=${MSG}"Actual and expected headers are dissimilar in $1.\n"
         BOOLEAN_ERR="true"
     }
@@ -160,23 +160,23 @@ printError(){
 testRegexEnr(){
     AWK=$(
 tail -n +2 ${OUTFILE2} | awk -F"\\t" '
-$1 =="" {print "line "NR" : "$1 }
-$2 < 0 || $2 !~ /^[0-9]+\.[0-9]+/ {print "line "NR" : "$2 }
-$3 < 0 || $3 !~ /^[0-9]+$/ {print "line "NR" : "$3 }
-$4 < 0 || $4 > 1 || $4 !~ /^[01]\.[0-9]+$/ {print "line "NR" : "$4 }
-$5 < 0 || $5 !~ /^[0-9]+\.[0-9]+/ {print "line "NR" : "$5 }
-$6 < 0 || $6 > 1 || $6 !~ /^[01]\.[0-9]+$/ {print "line "NR" : "$6 }
+$1 =="" {print "line "NR"; field 1 : "$1 }
+$2 < 0 || $2 !~ /^[0-9]+\.[0-9]+/ {print "line "NR"; field 2 : "$2 }
+$3 < 0 || $3 !~ /^[0-9]+$/ {print "line "NR"; field 3 : "$3 }
+$4 < 0 || $4 > 1 || $4 !~ /^[01]\.[0-9]+$/ {print "line "NR"; field 4 : "$4 }
+$5 < 0 || $5 !~ /^[0-9]+\.[0-9]+/ {print "line "NR"; field 5 : "$5 }
+$6 < 0 || $6 > 1 || $6 !~ /^[01]\.[0-9]+$/ {print "line "NR"; field 6 : "$6 }
 { for (i=7;i<=9;i++) {
-if ($i ~ /;{2,}/ || $i ~ /^;*$/ ) {print "line "NR" : "$i } }
+if ($i ~ /;{2,}/ || $i ~ /^;*$/ ) {print "line "NR"; field "i" : "$i } }
 }
 { for (i=10;i<=NF;i++) {
-if ($i < 0 || $i !~ /^[0-9]+$/ ) {print "line "NR" : "$i } }
+if ($i < 0 || $i !~ /^[0-9]+$/ ) {print "line "NR"; field "i" : "$i } }
 }
 ')
 
     [[ ${AWK} != "" ]] && {
         echo "\"${AWK}\"" >> bad/awk_enr.log
-        MSG=${MSG}"Enrichment file badly formatted"
+        MSG=${MSG}"Enrichment file is badly formatted.\n"
         BOOLEAN_ERR="true"
     }
 }
@@ -191,7 +191,7 @@ $1 != "false" && $1 != "true" {print "line "NR" : "$0 }
 
     [[ ${AWK} != "" ]] && {
         echo "\"${AWK}\"" >> bad/awk_map.log
-        MSG=${MSG}"Mapping file badly formatted"
+        MSG=${MSG}"Mapping is file badly formatted.\n"
         BOOLEAN_ERR="true"
     }
 }
@@ -553,6 +553,7 @@ testEnrReaction(){
     TESTS=('-tEnr 2')
     NB_LINE_MAP=111
     NB_LINE_ENR=254
+    setHeaderEnr 'Reaction' 'metabolites'
 
     WARN="${MSG_DEF}"
     OUTPUT="${WARN} ${MSG_CHECK}"
@@ -585,14 +586,15 @@ testsGPR(){
 
     INFILE="gpr_recon2.02.tsv"
     SBML="recon2.02.xml"
-    TESTS=('-t 4')
+    TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3')
+    #Enrichment with GPR gives BH correction > 4
     #TESTS=('-t 4' '-t 5' ' -t 6 -idSBML 3' '-t 5 -tEnr 6' '-t 4 -tEnr 6' '-t 6 -idSBML 3 -tEnr 5')
 
     NB_LINE_MAPS=(73 73 73 73 73 73)
     NB_LINE_ENRS=(41 41 41 69 65 69)
     MAP_PARS=('72 enzymes 72 100.0 2682 2.68' '72 proteins 72 100.0 1842 3.91' '72 genes 72 100.0 1842 3.91' '72 proteins 72 100.0 1842 3.91' '72 enzymes 72 100.0 2682 2.68' '72 genes 72 100.0 1842 3.91')
     ENR_PARS=('40 pathways 100 40.0' '40 pathways 100 40.0' '40 pathways 100 40.0' '69 genes 1842 3.75' '65 genes 1842 3.53' '69 proteins 1842 3.75')
-    HEAD_PARS=('Pathway enzymes' 'Pathway proteins' 'Pathway genes' 'Genes proteins' 'Genes enzymes' 'Enzymes proteins')
+    HEAD_PARS=('Pathway enzymes' 'Pathway proteins' 'Pathway genes' 'Gene proteins' 'Gene enzymes' 'Protein genes')
 
     WARN=""
     #WARN="${MSG_DEF}"
@@ -605,9 +607,8 @@ testsGPR(){
 
 START_TIME=$(date -u -d $(date +"%H:%M:%S") +"%s")
 printf "Tests in progress, could take an hour...\n"
-mkdir temp/
 [ -d bad ] && rm -rf bad/
-mkdir bad/
+mkdir bad/ temp/
 
 
 testsDefault
