@@ -1,17 +1,17 @@
 ![LOGO](Logo_Metexplore.png)
 # PathwayEnrichement
 
-Version: 2.0
+Version: 2.1
 
 ## Short description
-Predicts pathway enrichment into a (human) metabolic network (Recon v2.02)
+Predicts pathway enrichment into a (human) metabolic network (Recon v2.03)
 
 ## Description
-Chemical entities (metabolites, reactions, enzymes, proteins or genes) belonging to the fingerprint (the input file) are mapped on Recon2 network (Thiele et al., 2013) using identifiers from a chosen database (among ChEBI, ChemSpider, InChI, InChI key, KEGG, Human Metabolome DataBase, PubChem or SMILES) or by using their isotopic weight. Pathway enrichment is calculated with an exact Fisher one-tailed test (and corrected by Bonferroni and Benjamini Hochberg methods). This tool is part of the MetExplore's project consisting in a web server dedicated to the analysis of omics data in the context of genome scale metabolic networks (Cottret et al., 2010).
+Chemical entities (metabolites, reactions, enzymes, proteins or genes) belonging to the fingerprint (the input file) are mapped on Recon2 network (Thiele et al., 2013) using identifiers from a chosen database (among ChEBI, ChemSpider, InChI, InChI key, KEGG, Human Metabolome DataBase, PubChem or SMILES) or by using their isotopic weight. Pathway enrichment is calculated with an exact Fisher one-tailed test (and corrected by Bonferroni and Benjamini Hochberg methods). This tool is part of the MetExplore's project consisting in a web server dedicated to the analysis of omics data in the context of genome scale metabolic networks (Cottret et al., 2018).
 
 ### Input files
 - a ```fingerprint``` (tsv or tabular format): required, composed by at least a column containing identifier values to map on the network file. Multi-mapping (i.e., mapping on different identifier) could be performed if these three kind of values are included each in a separate column. Optionally, this program could filter empty values from a designated column (e.g., non-significant bio-entities after a statistical pre-selection).
-- a ```metabolic network``` (SBML) : optional, by default Recon v2.02 SBML file (without compartments) (Thiele et al., 2013).
+- a ```metabolic network``` (SBML) : optional, by default Recon v2.03 SBML file (without compartments) (Thiele et al., 2013).
 
 ### Output files
 - ```checking_format.tsv``` (optional, if bad identifier are detected): each line corresponds to an error in a database identifier in the dataset file: the n° of line, the name of the bio-entity, the concerned database, the InChI layer (optional) and the corresponding wrong value.
@@ -61,7 +61,7 @@ docker run docker-registry.phenomenal-h2020.eu/phnmnl/pathwayenrichment -i <inpu
 - ```-v (-version)``` for printing the tool's version.
 
 ##### Files parameters
-- ```-i (-inFile)```, ```-s (-sbml)``` (STRING) are used to specify the inputs files. Only ```-i``` - corresponding to the dataset of fingerprint - is required. ```-s``` - the sbml file where the network is extracted - used Recon2.02 network by default (Thiele et al., 2013).
+- ```-i (-inFile)```, ```-s (-sbml)``` (STRING) are used to specify the inputs files. Only ```-i``` - corresponding to the dataset of fingerprint - is required. ```-s``` - the sbml file where the network is extracted - used Recon v2.03 network by default (Thiele et al., 2013).
 - ```-o1 (-outCheck)```, ```-o2 (-outMap)``` and ```-o3 (-outPath)``` (STRING) could be used to specify the output file. They contains respectively results from checking database identifiers format validity (default: disabled), mapping (default: "mapping.tsv") and pathway enrichment (default: "pathwayEnrichment.tsv") 
 
 ##### Parsing parameters
@@ -74,10 +74,10 @@ docker run docker-registry.phenomenal-h2020.eu/phnmnl/pathwayenrichment -i <inpu
 ##### Mapping parameters
 - ```-nameCol```, ```-name```, ```-idSBML```, ```-inchi```, ```-inchikey```, ```-chebi```,```-kegg```, ```-hmdb```, ```-pubChem```, ```-csid (-chemspider)``` and ```-mass``` (NUMERICAL) options point out specific column numbers in the fingerprint file. ```-nameCol``` or ```-name``` indicate the name of the bio-entities. Only one of them should be used: the second one to perform name mapping or the first one otherwise. ```-idSBML``` corresponds to the identifier of the bio-entities in the SBML and ```-mass``` to isotopic mass. The others are database identifiers. With At least one mapping parameter should be activated; multiple parameters could be activated together. By default, ```-name``` and ```-id``` are set respectively to 1 and 2 ("1" is considered as the first column); the other parameters are disabled.
 - ```-prec (-precision)``` is used as the allowed error (in ppm) used with isotopic mass mapping. 
-- ```-l``` (STRING) selects the InChI's layers used to map metabolites. Nine layers could be selected: connections (c), hydrogen atoms (h), charge (q), protons (p), double-bond stereo (b), tetrahedral sp3 stereo (t), isotopic atoms (i), fixed hydrogens (f) and reconnected layers (r). These layers must be set as a list of characters containing the letter of each selected layer separated by commas. By default, this option is set on ```c,h``` for a mapping only on connections and hydrogens atom layers. A whole layers selected must be ```c,h,q,p,b,t,i,f,r```. For mapping on formula only, select ```-l``` option with no parameters after.
+- ```-l``` (STRING) selects the InChI's layers used to map metabolites. Nine layers could be selected: connections (c), hydrogen atoms (h), charge (q), protons (p), double-bond stereo (b), tetrahedral sp4 stereo (t), isotopic atoms (i), fixed hydrogens (f) and reconnected layers (r). These layers must be set as a list of characters containing the letter of each selected layer separated by commas. By default, this option is set on ```c,h``` for a mapping only on connections and hydrogens atom layers. A whole layers selected must be ```c,h,q,p,b,t,i,f,r```. For mapping on formula only, select ```-l``` option with no parameters after.
 - ```-t``` and ```-tEnr``` (NUMERICAL) specify the bio-entities respectively used in input of the process and to perform enrichment analysis: 1 for metabolites (by default as inputs), 2 for reactions, 3 for pathways (by default in enrichment analysis), 4 for enzymes, 5 for proteins and 6 for genes. When there are used in mapping input, the three last only match with SBML identifiers.
 
 
 ## References
 - Thiele I., Swainston N., Fleming R.M.T., et al. A community-driven global reconstruction of human metabolism (2013). Nature biotechnology 31(5):10. doi:10.1038/nbt.2488.
-- Cottret L. , Wildridge D., Vinson F., Barrett M.P., Charles H., Sagot M.-F. and Jourdan F. MetExplore: a web server to link metabolomic experiments and genome-scale metabolic networks. (2010) Nucleic Acids Research 1:38 Suppl:W132-7. doi:10.1093/nar/gkq312.
+- Cottret, L., Frainay, C., Chazalviel, M., et al. (2018). MetExplore: collaborative edition and exploration of metabolic networks. Nucleic acids research, 1.
